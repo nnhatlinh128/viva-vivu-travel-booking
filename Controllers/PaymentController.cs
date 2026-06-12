@@ -118,25 +118,27 @@ public class PaymentController : Controller
     [HttpGet]
     public async Task<IActionResult> CreatePayPalPayment(int bookingId)
     {
-        var booking = _context.Bookings
-            .FirstOrDefault(b => b.BookingId == bookingId);
-
-        if (booking == null)
+        try
         {
-            return NotFound();
+            var booking = _context.Bookings
+                .FirstOrDefault(b => b.BookingId == bookingId);
+
+            if (booking == null)
+            {
+                return Content("Booking not found");
+            }
+
+            var approvalUrl =
+                await _payPalService.CreateOrderAsync(
+                    booking.BookingId,
+                    booking.FinalPrice);
+
+            return Content($"Approval URL = {approvalUrl}");
         }
-
-        var approvalUrl =
-            await _payPalService.CreateOrderAsync(
-                booking.BookingId,
-                booking.FinalPrice);
-
-        if (string.IsNullOrEmpty(approvalUrl))
+        catch (Exception ex)
         {
-            return Content("Cannot create PayPal order.");
+            return Content(ex.ToString());
         }
-
-        return Redirect(approvalUrl);
     }
 
     [HttpGet]
