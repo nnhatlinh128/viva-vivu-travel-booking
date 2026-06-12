@@ -172,7 +172,13 @@ public class PaymentController : Controller
 
             _context.SaveChanges();
 
-            return Content("PAYPAL SUCCESS");
+            return RedirectToAction(
+            "Success",
+            "UserBookings",
+            new
+            {
+                bookingId = booking.BookingId
+            });
         }
         catch (Exception ex)
         {
