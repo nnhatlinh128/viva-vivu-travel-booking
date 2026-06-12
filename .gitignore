@@ -1,0 +1,13 @@
+bin/
+obj/
+.vs/
+.vscode/
+
+.DS_Store
+
+Logs/
+
+*.user
+*.suo
+*.cache
+*.lscache

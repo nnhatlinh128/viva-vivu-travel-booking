@@ -1,0 +1,122 @@
+﻿@model Booking
+
+@{
+    ViewData["Title"] = "Booking Details";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+
+            <h2 class="text-center fw-bold mb-4">@ViewData["Title"]</h2>
+
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-4">
+
+                    <dl class="row mb-0">
+
+                        <dt class="col-sm-4 text-muted fw-semibold">Khách hàng</dt>
+                        <dd class="col-sm-8 fw-semibold">
+                            @Model.User?.UserName
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted fw-semibold">Tour</dt>
+                        <dd class="col-sm-8">
+                            @Model.Tour?.Name
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted fw-semibold">Ngày đặt</dt>
+                        <dd class="col-sm-8">
+                            @Model.BookingDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted fw-semibold">Số người</dt>
+                        <dd class="col-sm-8">
+                            @Model.NumberOfParticipants
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted fw-semibold">Tổng tiền</dt>
+                        <dd class="col-sm-8 fw-bold text-danger">
+                            @Model.FinalPrice.ToString("N0") đ
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted fw-semibold">Trạng thái booking</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-info">
+                                @Model.Status
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted fw-semibold">Hình thức thanh toán</dt>
+                        <dd class="col-sm-8">
+                            @Model.PaymentMethod
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted fw-semibold">Trạng thái thanh toán</dt>
+                        <dd class="col-sm-8">
+                            @switch (Model.PaymentStatus)
+                            {
+                                case ToursAndTravelsManagement.Enums.PaymentStatus.Completed:
+                                    <span class="badge bg-success">
+                                        Đã thanh toán
+                                    </span>
+                                    break;
+
+                                case ToursAndTravelsManagement.Enums.PaymentStatus.Pending:
+                                    <span class="badge bg-warning text-dark">
+                                        Chờ thanh toán
+                                    </span>
+                                    break;
+
+                                case ToursAndTravelsManagement.Enums.PaymentStatus.Failed:
+                                    <span class="badge bg-danger">
+                                        Thanh toán thất bại
+                                    </span>
+                                    break;
+                            }
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted fw-semibold">Người tạo</dt>
+                        <dd class="col-sm-8">
+                            @Model.CreatedBy
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted fw-semibold">Ngày tạo</dt>
+                        <dd class="col-sm-8">
+                            @Model.CreatedDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted fw-semibold">Trạng thái</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.IsActive)
+                            {
+                                <span class="badge bg-success">Hoạt động</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Ngưng</span>
+                            }
+                        </dd>
+
+                    </dl>
+
+                    <hr class="my-4" />
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                            ← Back
+                        </a>
+
+                        <a asp-action="Edit"
+                           asp-route-id="@Model.BookingId"
+                           class="btn btn-primary px-5">
+                            Edit
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

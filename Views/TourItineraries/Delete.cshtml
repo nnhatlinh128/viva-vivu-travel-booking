@@ -1,0 +1,58 @@
+@model ToursAndTravelsManagement.Models.TourItinerary
+
+@{
+    ViewData["Title"] = "Xóa lịch trình";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+
+            <div class="card shadow-xl border-0 rounded-4">
+                <div class="card-body p-4">
+
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold text-danger mb-2">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Xác nhận xóa lịch trình
+                        </h3>
+                        <p class="text-muted mb-0">
+                            Hành động này <strong>không thể hoàn tác</strong>.
+                            Vui lòng kiểm tra kỹ trước khi tiếp tục.
+                        </p>
+                    </div>
+
+                    <hr />
+
+                    <!-- Itinerary Info -->
+                    <div class="alert alert-warning rounded-3 mb-4">
+                        <i class="fas fa-calendar-day me-2"></i>
+                        Bạn có chắc chắn muốn xóa
+                        <strong>Ngày @Model.DayNumber</strong> –
+                        <strong>@Model.Title</strong>?
+                    </div>
+
+                    <!-- Actions -->
+                    <form method="post" class="d-flex justify-content-between">
+                        <input type="hidden" asp-for="TourItineraryId" />
+
+                        <a asp-action="Index"
+                           asp-route-tourId="@Model.TourId"
+                           class="btn btn-outline-secondary rounded-pill px-4">
+                            ← Hủy
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-danger rounded-pill px-4">
+                            <i class="fas fa-trash-alt me-1"></i>
+                            Xóa lịch trình
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

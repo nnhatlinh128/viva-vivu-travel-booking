@@ -1,0 +1,382 @@
+﻿@model ToursAndTravelsManagement.Services.EmailService.ContactFormModel
+@{
+    ViewData["Title"] = "Chitiet";
+    Layout = "~/Views/Shared/_AnotherLayout.cshtml";
+}
+
+<div class="container py-5">
+    <h2 class="section-title text-center mb-5 fw-bold display-5">
+        Tuần trăng mật lãng mạn ở Sri Lanka
+    </h2>
+
+    <!-- ROW bao 2 cột -->
+    <div class="row g-0 bg-white rounded-4 overflow-hidden shadow-lg">
+
+        <!-- CỘT TRÁI: HÌNH -->
+        <div class="col-lg-6">
+            <img src="https://i.pinimg.com/736x/4f/21/56/4f21561611565c9ec124db26985e4898.jpg"
+                 class="w-100 h-100"
+                 style="object-fit: cover; min-height: 100%;"
+                 alt="Tuần trăng mật Sri Lanka">
+        </div>
+
+        <!-- CỘT PHẢI: NỘI DUNG -->
+        <div class="col-lg-6 bg-light d-flex align-items-center">
+            <div class="p-4 p-lg-5 w-100 text-center">
+
+                <del class="text-muted d-block mb-2 fs-4">31.250.000đ</del>
+                <h2 class="text-warning fw-bold mb-4 display-4">22.500.000đ</h2>
+
+                <div class="mb-4 text-start mx-auto" style="max-width: 420px;">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="ri-barcode-box-line text-primary me-3 fs-4"></i>
+                        <span>Mã tour: SRLK0625</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="ri-time-line text-success me-3 fs-4"></i>
+                        <span>6 Ngày 5 Đêm</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="ri-map-pin-line text-success me-3 fs-4"></i>
+                        <span>Khởi hành: TP.HCM</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="ri-flight-takeoff-line text-info me-3 fs-4"></i>
+                        <span>Máy bay + Xe</span>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 justify-content-center mb-4">
+                    <span class="badge bg-warning text-dark fw-bold px-3 py-2">15/02</span>
+                    <span class="badge bg-warning text-dark fw-bold px-3 py-2">22/02</span>
+                    <span class="badge bg-warning text-dark fw-bold px-3 py-2">01/03</span>
+                    <span class="badge bg-warning text-dark fw-bold px-3 py-2">08/03</span>
+                </div>
+
+                <div class="d-grid gap-3">
+                    <a href="https://zalo.me/0866849040"
+                       target="_blank"
+                       class="btn btn-warning btn-lg rounded-pill fw-bold shadow">
+                        Đặt ngay
+                    </a>
+                    <a href="tel:0866849040"
+                       class="btn btn-outline-warning btn-lg rounded-pill fw-bold">
+                        Liên hệ tư vấn
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    <!-- Tiêu đề LỊCH TRÌNH-->
+    <section id="promotion" style="background-color: #333a73;">
+        <h1 class="display-3 fw-bold text-white text-center py-4 my-0 lh-1">
+            LỊCH TRÌNH
+        </h1>
+    </section>
+
+    <section class="itinerary-section py-4">
+        <div class="container-fluid px-4 px-lg-5">
+            <div class="accordion">
+
+                <!-- Ngày 1 -->
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        Ngày 1: TP.HCM - Colombo - Negombo
+                        <span class="accordion-icon">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <p><strong>Tối hôm trước hoặc sáng sớm:</strong> Quý khách tập trung tại sân bay Tân Sơn Nhất, làm thủ tục chuyến bay đi Colombo (Sri Lanka). Hướng dẫn viên hỗ trợ check-in.</p>
+                        <p><strong>Đến Colombo:</strong> Sau khi hạ cánh, xe và hướng dẫn viên địa phương đón đoàn và di chuyển về Negombo – thành phố biển xinh đẹp gần sân bay.</p>
+                        <p>Nhận phòng khách sạn 4-5*, nghỉ ngơi sau chuyến bay dài. Buổi tối tự do dạo biển Negombo, thưởng thức hải sản tươi ngon hoặc thư giãn tại resort.</p>
+                        <p><strong>Nghỉ đêm tại Negombo.</strong></p>
+                    </div>
+                </div>
+
+                <!-- Ngày 2 -->
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        Ngày 2: Negombo - Sigiriya - Dambulla
+                        <span class="accordion-icon">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <p>Sau bữa sáng, đoàn khởi hành đi Sigiriya – di sản thế giới UNESCO.</p>
+                        <ul>
+                            <li><strong>Leo Sigiriya Rock Fortress</strong> (Tảng đá Sư tử) – công trình cổ kính với những bức tranh phù điêu nàng tiên nữ tuyệt đẹp và tầm nhìn bao quát toàn vùng.</li>
+                            <li>Thăm vườn gia vị và trải nghiệm massage Ayurvedic thư giãn truyền thống (tùy chọn).</li>
+                            <li>Chiều tham quan <strong>Động Dambulla</strong> – quần thể hang động Phật giáo lớn nhất Sri Lanka với hơn 150 bức tượng Phật và tranh tường cổ.</li>
+                        </ul>
+                        <p>Nghỉ đêm tại khu vực Sigiriya/Dambulla.</p>
+                    </div>
+                </div>
+
+                <!-- Ngày 3 -->
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        Ngày 3: Dambulla - Kandy
+                        <span class="accordion-icon">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <p>Sau bữa sáng, đoàn di chuyển đến Kandy – thủ phủ văn hóa cuối cùng của Sri Lanka.</p>
+                        <ul>
+                            <li>Tham quan <strong>Vườn Bách Thảo Peradeniya</strong> – một trong những vườn thực vật đẹp nhất châu Á.</li>
+                            <li>Thăm <strong>Đền Răng Phật (Temple of the Tooth Relic)</strong> – ngôi đền linh thiêng nhất của Phật giáo Sri Lanka.</li>
+                            <li>Buổi tối xem show biểu diễn văn hóa truyền thống Kandyan với vũ điệu và múa lửa đặc sắc.</li>
+                        </ul>
+                        <p>Nghỉ đêm tại Kandy.</p>
+                    </div>
+                </div>
+
+                <!-- Ngày 4 -->
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        Ngày 4: Kandy - Nuwara Eliya (Tiểu Anh Quốc)
+                        <span class="accordion-icon">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <p>Di chuyển bằng xe qua những đồi chè xanh mướt tuyệt đẹp đến Nuwara Eliya – được mệnh danh là “Tiểu Anh Quốc” với khí hậu mát mẻ quanh năm.</p>
+                        <ul>
+                            <li>Tham quan <strong>đồi chè và nhà máy chè</strong>, tìm hiểu quy trình sản xuất chè Ceylon nổi tiếng thế giới.</li>
+                            <li>Dạo quanh hồ Gregory, công viên Victoria và những ngôi nhà kiểu Anh cổ kính.</li>
+                            <li>Tự do mua sắm trà và quà lưu niệm.</li>
+                        </ul>
+                        <p>Nghỉ đêm tại Nuwara Eliya.</p>
+                    </div>
+                </div>
+
+                <!-- Ngày 5 -->
+                <div class=" accordion-item">
+                    <button class="accordion-header">
+                        Ngày 5: Nuwara Eliya - Benthota (Biển)
+                        <span class="accordion-icon">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <p>Sau bữa sáng, đoàn đi tàu hỏa ngắm cảnh (đoạn đẹp nhất tuyến đường sắt Sri Lanka – tùy tình hình vé) đến khu vực bãi biển Benthota hoặc khu vực lân cận.</p>
+                        <p>Nhận phòng resort 4-5* ven biển. Thời gian còn lại tự do thư giãn trên bãi biển cát trắng, tắm biển, tham gia các hoạt động thể thao nước hoặc spa dành riêng cho tuần trăng mật.</p>
+                        <p>Buổi tối: bữa tối lãng mạn candle light (tùy gói dịch vụ resort).</p>
+                        <p>Nghỉ đêm tại Benthota/Unawatuna.</p>
+                    </div>
+                </div>
+
+                <!-- Ngày 6 -->
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        Ngày 6: Benthota - Colombo - TP.HCM
+                        <span class="accordion-icon">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <p>Sau bữa sáng, đoàn tự do tắm biển hoặc nghỉ ngơi tại resort đến giờ ra sân bay.</p>
+                        <p>Trên đường về Colombo ghé thăm <strong>Trung tâm bảo tồn rùa biển</strong> và mua sắm quà lưu niệm tại thủ đô.</p>
+                        <p>Xe đưa đoàn ra sân bay Colombo làm thủ tục bay về TP.HCM.</p>
+                        <p><strong>Kết thúc chuyến đi ngọt ngào và đầy kỷ niệm!</strong></p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+    .itinerary-section {
+        background-color: #f8f9fa;
+    }
+
+    .itinerary-section .container-fluid {
+        max-width: 100%;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .accordion-item {
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        margin-bottom: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .accordion-header {
+        width: 100%;
+        padding: 14px 20px;
+        background: #ddd;
+        color: black;
+        border: none;
+        text-align: left;
+        font-size: 19px;
+        font-weight: bold;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background 0.3s;
+    }
+
+    .accordion-header:hover {
+        background: #2c3468;
+    }
+
+    .accordion-header.active {
+        background: #fba834;
+    }
+
+    .accordion-header.active .accordion-icon {
+        transform: rotate(45deg);
+    }
+
+    .accordion-icon {
+        font-size: 26px;
+        font-weight: bold;
+    }
+
+    .accordion-content {
+        padding: 0 20px;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease, padding 0.5s ease;
+        background: #fff;
+    }
+
+    .accordion-content.open {
+        padding: 18px 20px;
+        max-height: 2000px;
+    }
+
+    .accordion-content p, .accordion-content ul {
+        margin: 10px 0;
+        line-height: 1.6;
+        color: #444;
+        font-size: 15px;
+    }
+
+    .accordion-content ul {
+        padding-left: 20px;
+    }
+
+    .accordion-content li {
+        margin-bottom: 8px;
+    }
+
+    /* Tablet & Mobile */
+@@media (max-width: 991.98px) {
+
+    /* Tiêu đề tour */
+    .section-title {
+        font-size: 2rem !important;
+        margin-bottom: 2.5rem;
+    }
+
+    /* Khối ảnh + giá */
+    .row.g-0.bg-white {
+        flex-direction: column;
+    }
+
+    .row.g-0.bg-white img {
+        height: 260px;
+    }
+
+    /* Giá */
+    del {
+        font-size: 1.2rem;
+    }
+
+    h2.text-warning {
+        font-size: 2.2rem;
+    }
+
+    /* Thông tin tour */
+    .d-flex.align-items-center.justify-content-center {
+        justify-content: flex-start !important;
+    }
+
+    /* Badge ngày khởi hành */
+    .badge {
+        font-size: 0.9rem;
+    }
+
+    /* Nút CTA */
+    .btn-lg {
+        font-size: 1rem;
+        padding: 12px 18px;
+    }
+
+    /* LỊCH TRÌNH title */
+    #promotion h1 {
+        font-size: 2.2rem;
+        padding: 16px 0;
+    }
+}
+
+/* Mobile nhỏ */
+@@media (max-width: 575.98px) {
+
+    /* Container padding */
+    .container,
+    .container-fluid {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    /* Tiêu đề */
+    .section-title {
+        font-size: 1.6rem !important;
+    }
+
+    /* Giá */
+    h2.text-warning {
+        font-size: 1.9rem;
+    }
+
+    /* Accordion */
+    .accordion-header {
+        font-size: 16px;
+        padding: 12px 14px;
+    }
+
+    .accordion-icon {
+        font-size: 22px;
+    }
+
+    .accordion-content p,
+    .accordion-content ul {
+        font-size: 14px;
+    }
+
+    /* Badge ngày */
+    .badge {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+
+    /* Button */
+    .btn {
+        border-radius: 30px;
+    }
+}
+</style>
+
+<script>
+    document.querySelectorAll('.accordion-header').forEach(button => {
+        button.addEventListener('click', () => {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('.accordion-icon');
+
+            // Đóng các item khác
+            document.querySelectorAll('.accordion-content.open').forEach(openContent => {
+                if (openContent !== content) {
+                    openContent.classList.remove('open');
+                    openContent.previousElementSibling.classList.remove('active');
+                    openContent.previousElementSibling.querySelector('.accordion-icon').textContent = '+';
+                }
+            });
+
+            // Toggle hiện tại
+            content.classList.toggle('open');
+            button.classList.toggle('active');
+            icon.textContent = content.classList.contains('open') ? '−' : '+';
+        });
+    });
+</script>

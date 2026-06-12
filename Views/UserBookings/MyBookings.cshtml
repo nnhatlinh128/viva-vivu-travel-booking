@@ -1,0 +1,363 @@
+﻿@model UserMyBookingsViewModel
+@using ToursAndTravelsManagement.Enums
+
+@{
+    ViewData["Title"] = "Thông tin khách hàng";
+}
+
+
+
+
+<style>
+    .card-profile { border: none; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+    .nav-pills .nav-link { border-radius: 10px; color: #5b638b; font-weight: 500; padding: 12px 20px; margin-bottom: 5px; }
+    .nav-pills .nav-link.active { background-color: #27377D; color: #fff; }
+    .nav-pills .nav-link:hover:not(.active) { background-color: #f8f9fa; color: #27377D; }
+    .form-control { border-radius: 10px; padding: 12px 15px; border-color: #dee2e6; }
+    .form-control:focus { border-color: #27377D; box-shadow: 0 0 0 0.25rem rgba(39, 55, 125, 0.1); }
+    .btn-primary-custom { background-color: #F7A531; border: none; border-radius: 10px; padding: 10px 30px; font-weight: bold; color: white; }
+    .btn-primary-custom:hover { background-color: #e0942a; color: white; }
+    .avatar-circle { width: 150px; height: 150px; object-fit: cover; border-radius: 50%; border: 5px solid #F7F1E6; }
+    .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+    .status-upcoming { background-color: #e3f2fd; color: #0d47a1; }
+    .status-completed { background-color: #e8f5e9; color: #1b5e20; }
+    .status-cancelled { background-color: #ffebee; color: #b71c1c; }
+    .payment-badge {padding: 4px 10px;border-radius: 12px;font-size: 0.75rem;font-weight: 600;}
+    .payment-paid {background-color: #e8f5e9;color: #1b5e20;}
+    .payment-pending {background-color: #fff8e1;color: #ff8f00;}
+    .payment-failed {background-color: #ffebee;color: #b71c1c;}
+    .profile-menu .nav-link {transition: all 0.25s ease;}
+    .profile-menu .nav-link:hover {background-color: #f0f4ff;color: #27377D;transform: translateX(3px);}
+    .profile-menu .nav-link.active {background-color: #27377D !important;color: #fff !important;}
+</style>
+
+
+
+
+<div class="container py-5">
+    <div class="row g-4">
+       
+        <div class="col-lg-3">
+            <div class="card card-profile p-4 h-100">
+                <div class="text-center mb-4 pb-3 border-bottom">
+
+                    @{
+                        var avatarSrc = string.IsNullOrEmpty(Model.User.AvatarUrl)
+                            ? Url.Content("~/images/avatar3.png")
+                            : Model.User.AvatarUrl;
+                    }
+
+                    <img src="@avatarSrc"
+                        class="avatar-circle mb-2"
+                        alt="Avatar" />
+
+                    <!-- FORM ĐỔI AVATAR -->
+                    <form asp-controller="Account"
+                        asp-action="UpdateAvatar"
+                        method="post"
+                        enctype="multipart/form-data"
+                        class="mt-2">
+
+                        @Html.AntiForgeryToken()
+
+                        <label class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
+                            <i class="ri-camera-line"></i>
+                            Chọn ảnh
+                            <input type="file"
+                                name="AvatarFile"
+                                accept="image/*"
+                                hidden
+                                onchange="this.form.submit()" />
+                        </label>
+                    </form>
+
+                    <h5 class="fw-bold mt-3 mb-1">
+                        @Model.User.FirstName @Model.User.LastName
+                    </h5>
+                    <p class="text-muted small">@Model.User.Email</p>
+
+                    @if (Model.User.MembershipTier != null)
+{
+    <span class="badge rounded-pill px-3 py-1 mt-2"
+          style="background-color:#27377D;color:#fff;font-size:0.8rem;">
+        Hạng thành viên: @Model.User.MembershipTier.Name
+    </span>
+}
+else
+{
+    <span class="badge rounded-pill bg-secondary px-3 py-1 mt-2"
+          style="font-size:0.8rem;">
+        Hạng thành viên: Bronze
+    </span>
+}
+
+                </div>
+               
+                <div class="nav flex-column nav-pills profile-menu">
+                    <a class="nav-link active d-flex align-items-center gap-3"
+                    asp-controller="UserBookings"
+                    asp-action="MyBookings">
+                        <i class="ri-user-line"></i> Thông tin tài khoản
+                    </a>
+                    <a class="nav-link d-flex align-items-center gap-3"
+                    asp-controller="UserBookings"
+                    asp-action="History">
+                        <i class="ri-history-line"></i> Lịch sử đặt tour
+                    </a>
+                    <a class="nav-link d-flex align-items-center gap-3"
+                    asp-controller="FavoriteTours"
+                    asp-action="Index">
+                        <i class="ri-heart-line"></i> Tour yêu thích
+                    </a>
+                    <a class="nav-link d-flex align-items-center gap-3"
+                    asp-controller="Home"
+                    asp-action="ComingSoon">
+                        <i class="ri-lock-password-line"></i> Đổi mật khẩu
+                    </a>
+                    <hr class="my-2">
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-grid">
+                        <button type="submit" class="nav-link text-danger d-flex align-items-center gap-3 w-100 text-start" style="background: none; border: none;">
+                            <i class="ri-logout-box-line"></i> Đăng xuất
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="col-lg-9">
+           
+            <div class="card card-profile p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold" style="color: #27377D;">Thông tin cá nhân</h4>
+                    <button class="btn btn-light rounded-circle"><i class="ri-edit-line"></i></button>
+                </div>
+
+                <form asp-controller="Account"
+                    asp-action="UpdateProfile"
+                    method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label>Họ</label>
+                            <input name="FirstName"
+                                value="@Model.User.FirstName"
+                                class="form-control" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Tên</label>
+                            <input name="LastName"
+                                value="@Model.User.LastName"
+                                class="form-control" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Email</label>
+                            <input value="@Model.User.Email"
+                                class="form-control"
+                                readonly />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Số điện thoại</label>
+                            <input name="PhoneNumber"
+                                value="@Model.User.PhoneNumber"
+                                class="form-control" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Ngày sinh</label>
+                            <input name="DateOfBirth"
+                                type="date"
+                                value="@Model.User.DateOfBirth.ToString("yyyy-MM-dd")"
+                                class="form-control" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Địa chỉ</label>
+                            <input name="Address"
+                                value="@Model.User.Address"
+                                class="form-control" />
+                        </div>
+
+                        <div class="col-12 text-end mt-4">
+                            <button type="submit"
+                                    class="btn btn-primary-custom">
+                                Cập nhật thông tin
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card card-profile p-4">
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+                    <h4 class="fw-bold m-0" style="color: #27377D;">Lịch sử đặt tour</h4>
+                    <div class="btn-group" role="group">
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                        <label class="btn btn-outline-primary btn-sm" for="btnradio1">Tất cả</label>
+
+
+
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                        <label class="btn btn-outline-primary btn-sm" for="btnradio2">Sắp tới</label>
+
+
+
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+                        <label class="btn btn-outline-primary btn-sm" for="btnradio3">Đã đi</label>
+                    </div>
+                </div>
+
+
+
+
+@if (!Model.Bookings.Any())
+{
+    <div class="text-center text-muted py-5">
+        <i class="ri-calendar-event-line fs-1"></i>
+        <p class="mt-3">Bạn chưa có booking nào.</p>
+    </div>
+}
+else
+{
+    @foreach (var booking in Model.Bookings)
+    {
+        <div class="card mb-3 border shadow-none hover-shadow transition
+            @(booking.Status == BookingStatus.Cancelled ? "bg-light opacity-75" : "")">
+
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="@booking.Tour?.Destination?.ImageUrl"
+                        class="img-fluid rounded-start h-100 object-fit-cover"
+                        style="@(booking.Status == BookingStatus.Cancelled ? "filter: grayscale(80%);" : "")"
+                        alt="Tour Image">
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title fw-bold mb-0">
+                                @booking.Tour?.Name
+                            </h5>
+
+                            @switch (booking.Status)
+                            {
+                                case BookingStatus.Pending:
+                                    <span class="status-badge status-upcoming">Chờ xác nhận</span>
+                                    break;
+                                case BookingStatus.Confirmed:
+                                    <span class="status-badge status-upcoming">Đã xác nhận</span>
+                                    break;
+                                case BookingStatus.Completed:
+                                    <span class="status-badge status-completed">Hoàn thành</span>
+                                    break;
+                                case BookingStatus.Cancelled:
+                                    <span class="status-badge status-cancelled">Đã hủy</span>
+                                    break;
+                            }
+                        </div>
+
+                        <div class="text-muted small mb-3">
+                            <span class="me-3">
+                                <i class="ri-calendar-line"></i>
+                                @booking.BookingDate.ToString("dd/MM/yyyy")
+                            </span>
+                            <span class="me-3">
+                                <i class="ri-user-line"></i>
+                                @booking.NumberOfParticipants người
+                            </span>
+                            <span>
+                                <i class="ri-ticket-line"></i>
+                                @booking.BookingId
+                            </span>
+                        </div>
+
+                        <div class="small mb-3">
+                            <span class="me-3 text-muted">
+                                <i class="ri-bank-card-line"></i>
+                                Thanh toán:
+                                <strong>@booking.PaymentMethod</strong>
+                            </span>
+
+                            @switch (booking.PaymentStatus)
+                            {
+                                case PaymentStatus.Completed:
+                                    <span class="payment-badge payment-paid">Đã thanh toán</span>
+                                    break;
+
+                                case PaymentStatus.Pending:
+                                    <span class="payment-badge payment-pending">Chờ thanh toán</span>
+                                    break;
+
+                                case PaymentStatus.Failed:
+                                    <span class="payment-badge payment-failed">Thanh toán thất bại</span>
+                                    break;
+                            }
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-end border-top pt-3">
+                            <div>
+                                <small class="text-muted">Tổng thanh toán</small>
+
+                                @if (booking.Status == BookingStatus.Cancelled)
+                                {
+                                    <div class="fw-bold text-muted fs-5 text-decoration-line-through">
+                                        @booking.TotalPrice.ToString("N0")đ
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="fw-bold text-primary fs-5">
+                                        @booking.TotalPrice.ToString("N0")đ
+                                    </div>
+                                }
+                            </div>
+
+                            @if (booking.Status != BookingStatus.Cancelled
+                                 && booking.Status != BookingStatus.Completed)
+                            {
+                                <form asp-action="CancelBooking" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="bookingId" value="@booking.BookingId" />
+                                    <button class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                        Hủy tour
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+                    @if (ViewBag.IsFullHistory != true)
+                    {
+                        <div class="text-center mt-3">
+                            <a asp-controller="UserBookings"
+                            asp-action="History"
+                            class="text-decoration-none fw-bold"
+                            style="color: #27377D;">
+                                Xem toàn bộ lịch sử <i class="ri-arrow-right-line"></i>
+                            </a>
+                        </div>
+                    }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+

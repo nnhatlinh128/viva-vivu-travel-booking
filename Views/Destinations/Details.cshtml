@@ -1,0 +1,91 @@
+﻿@model Destination
+
+@{
+    ViewData["Title"] = "Destination Details";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+
+            <h2 class="text-center fw-bold mb-4">@ViewData["Title"]</h2>
+
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-4">
+
+                    <!-- Ảnh điểm đến -->
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <div class="text-center mb-4">
+                            <img src="@Model.ImageUrl"
+                                 class="img-fluid rounded-4 shadow-sm"
+                                 style="max-height: 320px; object-fit: cover;"
+                                 alt="@Model.Name" />
+                        </div>
+                    }
+
+                    <dl class="row mb-0">
+
+                        <dt class="col-sm-4 text-muted fw-semibold">Tên điểm đến</dt>
+                        <dd class="col-sm-8 fw-semibold">@Model.Name</dd>
+
+                        <dt class="col-sm-4 text-muted fw-semibold">Mô tả</dt>
+                        <dd class="col-sm-8">@Model.Description</dd>
+
+                        <dt class="col-sm-4 text-muted fw-semibold">Quốc gia</dt>
+                        <dd class="col-sm-8">@Model.Country</dd>
+
+                        <dt class="col-sm-4 text-muted fw-semibold">Thành phố</dt>
+                        <dd class="col-sm-8">@Model.City</dd>
+
+                        <dt class="col-sm-4 text-muted fw-semibold">Loại</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.IsDomestic)
+                            {
+                                <span class="badge bg-success">Nội địa</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-primary">Quốc tế</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted fw-semibold">Người tạo</dt>
+                        <dd class="col-sm-8">@Model.CreatedBy</dd>
+
+                        <dt class="col-sm-4 text-muted fw-semibold">Ngày tạo</dt>
+                        <dd class="col-sm-8">@Model.CreatedDate.ToString("dd/MM/yyyy")</dd>
+
+                        <dt class="col-sm-4 text-muted fw-semibold">Trạng thái</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.IsActive)
+                            {
+                                <span class="badge bg-success">Đang hoạt động</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Ngưng hoạt động</span>
+                            }
+                        </dd>
+
+                    </dl>
+
+                    <hr class="my-4" />
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                            ← Back to list
+                        </a>
+                        <a asp-action="Edit"
+                           asp-route-id="@Model.DestinationId"
+                           class="btn btn-primary px-5">
+                            Edit
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

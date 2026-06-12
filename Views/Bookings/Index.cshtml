@@ -1,0 +1,241 @@
+﻿@using ToursAndTravelsManagement.Common
+@using ToursAndTravelsManagement.Enums
+@model PaginatedList<ToursAndTravelsManagement.Models.Booking>
+
+@{
+    ViewData["Title"] = "Quản lý Booking";
+}
+
+<div class="container-fluid">
+
+    <!-- ===== HEADER ===== -->
+    <div class="card shadow-xl mb-4">
+        <div class="card-body bg-gradient-primary text-white rounded-4">
+            <h1 class="mb-0 fw-bold text-white header-title">Quản Lý Đặt Tour</h1>
+        </div>
+    </div>
+
+    <!-- ===== ACTION BUTTONS ===== -->
+    <div class="mb-4 d-flex flex-wrap gap-2">
+        <a asp-action="ExportPdf" class="btn btn-secondary hover-lift">
+            <i class="fas fa-file-pdf me-1"></i> Export PDF
+        </a>
+        <a asp-action="ExportExcel" class="btn btn-secondary hover-lift">
+            <i class="fas fa-file-excel me-1"></i> Export Excel
+        </a>
+        <a asp-action="Create" class="btn btn-warning hover-lift">
+            <i class="fas fa-plus me-1"></i> Create New
+        </a>
+    </div>
+
+    <!-- ===== TABLE ===== -->
+    <div class="card shadow-xl">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle mb-0">
+                <thead class="bg-light-purple">
+                    <tr class="text-primary text-uppercase small">
+                        <th>ID</th>
+                        <th>Khách hàng</th>
+                        <th>Tour</th>
+                        <th>Ngày đặt</th>
+                        <th>Số người</th>
+                        <th>Tổng tiền</th>
+                        <th>Booking</th>
+                        <th>Thanh toán</th>
+                        <th>Người tạo</th>
+                        <th>Hoạt động</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr class="table-row-hover hover-lift">
+
+                            <td class="fw-semibold">#@item.BookingCode</td>
+
+                            <td>@item.User?.UserName</td>
+
+                            <td class="fw-semibold">@item.Tour?.Name</td>
+
+                            <td>@item.BookingDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+
+                            <td class="text-center">@item.NumberOfParticipants</td>
+
+                            <td class="fw-bold text-danger">
+                                @item.FinalPrice.ToString("N0") đ
+                            </td>
+
+                            <!-- Booking Status -->
+                            <td>
+                                <span class="badge bg-info">@item.Status</span>
+                            </td>
+
+                            <!-- Payment Status -->
+                            <td>
+                                @switch (item.PaymentStatus)
+                                {
+                                    case PaymentStatus.Completed:
+                                        <span class="badge bg-success">
+                                            Đã thanh toán
+                                        </span>
+                                        break;
+
+                                    case PaymentStatus.Pending:
+                                        <span class="badge bg-warning text-dark">
+                                            Chờ thanh toán
+                                        </span>
+                                        break;
+
+                                    case PaymentStatus.Failed:
+                                        <span class="badge bg-danger">
+                                            Thanh toán thất bại
+                                        </span>
+                                        break;
+                                }
+                            </td>
+
+                            <td>@item.CreatedBy</td>
+
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Inactive</span>
+                                }
+                            </td>
+
+                            <td>
+                                <div class="btn-group">
+                                    <a asp-action="Details" asp-route-id="@item.BookingId"
+                                        class="btn btn-sm btn-outline-info">
+                                        Details
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.BookingId"
+                                        class="btn btn-sm btn-outline-primary">
+                                        Edit
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.BookingId"
+                                        class="btn btn-sm btn-outline-danger">
+                                        Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== PAGINATION ===== -->
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            @{
+                var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+            }
+
+            <li class="page-item @prevDisabled">
+                <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)"
+                    asp-route-pageSize="@ViewBag.PageSize" class="page-link">
+                    Previous
+                </a>
+            </li>
+
+            <li class="page-item @nextDisabled">
+                <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)"
+                    asp-route-pageSize="@ViewBag.PageSize" class="page-link">
+                    Next
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<style>
+    :root {
+        --primary-purple: #2c3e88;
+        --primary-dark: #1e2a5e;
+        --warning-orange: #ff9800;
+        --light-purple: #f8f5ff;
+        --bg-light-purple: #e8e0ff;
+    }
+
+    .header-title {
+        letter-spacing: 1px;
+        text-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, var(--primary-purple), var(--primary-dark)) !important;
+    }
+
+    .bg-light-purple {
+        background-color: var(--bg-light-purple) !important;
+    }
+
+    .text-primary {
+        color: var(--primary-purple) !important;
+    }
+
+    .btn-warning {
+        background-color: var(--warning-orange) !important;
+        border-color: var(--warning-orange) !important;
+        color: white !important;
+    }
+
+    .btn-warning:hover {
+        background-color: #e2972f !important;
+        transform: translateY(-3px);
+    }
+
+    .table-row-hover:hover {
+        background-color: var(--light-purple) !important;
+        transition: all 0.3s ease;
+    }
+
+    .hover-lift {
+        transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .shadow-xl {
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .page-item.active .page-link {
+        background: var(--primary-purple) !important;
+        border-color: var(--primary-purple) !important;
+        color: white !important;
+    }
+
+    .page-link {
+        color: var(--primary-purple);
+        border: 1px solid #ddd;
+    }
+
+    .page-link:hover {
+        background-color: var(--light-purple);
+        color: var(--primary-purple);
+        border-color: var(--primary-purple);
+    }
+
+    .card {
+        border-radius: 1.5rem;
+    }
+
+    @@media (max-width: 768px) {
+        table {
+            font-size: 0.9rem;
+        }
+    }
+</style>

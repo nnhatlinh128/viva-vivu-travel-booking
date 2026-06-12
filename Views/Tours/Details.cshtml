@@ -1,0 +1,844 @@
+﻿@model Tour
+@using Microsoft.EntityFrameworkCore
+@inject ToursAndTravelsManagement.Data.ApplicationDbContext _context
+
+
+
+
+@{
+    ViewData["Title"] = Model.Name;
+    Layout = "~/Views/Shared/_AnotherLayout.cshtml";
+
+
+
+
+    // Lấy tất cả tour khác (trừ tour hiện tại), include Destination để lấy tên điểm đến
+    var allOtherTours = _context.Tours
+        .Include(t => t.Destination)
+        .Where(t => t.TourId != Model.TourId)
+        .ToList();
+}
+
+
+
+
+<div class="container py-5">
+
+
+
+
+    <!-- ==================== TIÊU ĐỀ TOUR ==================== -->
+    <h2 class="section-title text-center mb-5 fw-bold display-5"
+        data-aos="fade-down" data-aos-duration="800">
+        @Model.Name
+    </h2>
+
+
+
+
+    <!-- ==================== KHỐI CHÍNH (HÌNH + GIÁ) ==================== -->
+    <div class="row g-0 bg-white rounded-4 shadow-lg overflow-hidden mb-5"
+         data-aos="fade-up" data-aos-duration="1000">
+
+
+
+
+        <div class="col-lg-6 p-0 order-lg-1 order-2">
+            <!-- ẢNH CHÍNH CÓ ZOOM KHI CLICK -->
+            <img src="@(string.IsNullOrEmpty(Model.Destination?.ImageUrl)
+                        ? "/images/default-tour.jpg"
+                        : Model.Destination.ImageUrl)"
+                 class="w-100 h-100 tour-zoomable cursor-pointer"
+                 style="object-fit: cover; min-height: 300px;"
+                 alt="@Model.Name"
+                 data-bs-toggle="modal"
+                 data-bs-target="#imageZoomModal"
+                 onclick="setZoomImage(this.src, this.alt)">
+        </div>
+
+
+
+
+        <div class="col-lg-6 bg-light d-flex align-items-center justify-content-center order-lg-2 order-1">
+            <div class="p-4 p-lg-5 text-center w-100">
+
+
+
+
+                <h2 class="text-warning fw-bold mb-4 display-4">
+                    @string.Format("{0:N0}đ", Model.Price)
+                </h2>
+
+
+
+
+                <div class="mb-4">
+                    <div class="d-flex align-items-center justify-content-center mb-3">
+                        <i class="ri-map-pin-line text-success me-3 fs-4"></i>
+                        <span class="fw-medium">Điểm đến: @(Model.Destination?.Name ?? "Chưa xác định")</span>
+                    </div>
+
+
+
+
+                    <div class="d-flex align-items-center justify-content-center mb-3">
+                        <i class="ri-calendar-line text-danger me-3 fs-4"></i>
+                        <span class="fw-medium">
+                            @Model.StartDate.ToString("dd/MM/yyyy") - @Model.EndDate.ToString("dd/MM/yyyy")
+                        </span>
+                    </div>
+
+
+
+
+                    <div class="d-flex align-items-center justify-content-center mb-3">
+                        <i class="ri-team-line text-primary me-3 fs-4"></i>
+                        <span class="fw-medium">Tối đa @Model.MaxParticipants khách</span>
+                    </div>
+
+
+
+
+                    <div class="d-flex align-items-center justify-content-center mb-3">
+                        <i class="ri-flight-takeoff-line text-info me-3 fs-4"></i>
+                        <span class="fw-medium">Máy bay + Xe du lịch</span>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-3">
+
+                    <a class="btn btn-outline-primary btn-sm rounded-pill px-4 py-2"
+                    asp-controller="UserBookings"
+                    asp-action="BookTour"
+                    asp-route-id="@Model.TourId">
+                        Đặt ngay
+                    </a>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <form asp-controller="FavoriteTours"
+                            asp-action="Toggle"
+                            method="post">
+
+                            <input type="hidden" name="tourId" value="@Model.TourId" />
+
+                            <button type="submit"
+                                    class="btn btn-outline-danger btn-sm rounded-pill px-4 py-2 w-100">
+                                ❤️ Thêm vào yêu thích
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account"
+                        asp-action="Login"
+                        class="btn btn-outline-danger btn-sm rounded-pill px-4 py-2">
+                            ❤️ Đăng nhập để yêu thích
+                        </a>
+                    }
+
+                    <a href="tel:0866849040"
+                    class="btn btn-outline-warning btn-lg rounded-pill fw-bold border-2">
+                        Liên hệ tư vấn
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- ==================== MÔ TẢ CHI TIẾT TOUR ==================== -->
+    <div class="bg-white rounded-4 shadow-sm p-4 p-lg-5"
+         data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+        <h3 class="fw-bold text-primary mb-4 text-center">
+            Thông tin chi tiết tour
+        </h3>
+
+
+
+
+        <p class="lead text-muted text-center">
+            @(string.IsNullOrEmpty(Model.Description) ? "Đang cập nhật thông tin chi tiết tour..." : Model.Description)
+        </p>
+    </div>
+
+
+
+
+    <!-- LỊCH TRÌNH TOUR -->
+    <div class="bg-white rounded-4 shadow-sm p-4 p-lg-5 mt-5"
+         data-aos="fade-up" data-aos-duration="1000">
+        <h3 class="fw-bold text-primary mb-5 text-center"
+            data-aos="fade-down" data-aos-duration="800" data-aos-delay="100">
+            Lịch trình chi tiết
+        </h3>
+
+
+        @if (ViewBag.Itineraries == null || !((List<TourItinerary>)ViewBag.Itineraries).Any())
+        {
+            <p class="text-muted text-center" data-aos="fade-in" data-aos-duration="800" data-aos-delay="200">
+                Lịch trình tour đang được cập nhật.
+            </p>
+        }
+        else
+        {
+            <div class="accordion" id="itineraryAccordion">
+                @{ int index = 0; }
+                @foreach (var item in (List<TourItinerary>)ViewBag.Itineraries)
+                {
+                    var collapseId = "collapse-" + item.TourItineraryId;
+                    var headingId = "heading-" + item.TourItineraryId;
+
+
+                    <div class="accordion-item mb-4 border-0 shadow-md rounded-4 overflow-hidden itinerary-item"
+                         data-aos="fade-up"
+                         data-aos-duration="800"
+                         data-aos-delay="@(index * 100)">
+                        <h2 class="accordion-header" id="@headingId">
+                            <button class="accordion-button collapsed fw-semibold fs-5 py-4 px-4 rounded-4 shadow-sm"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#@collapseId"
+                                    aria-expanded="false"
+                                    aria-controls="@collapseId">
+                                <span class="day-badge me-3">
+                                    Ngày @item.DayNumber
+                                </span>
+                                <span>@item.Title</span>
+                                <i class="ri-arrow-down-s-line ms-auto"></i>
+                            </button>
+                        </h2>
+
+
+                        <div id="@collapseId"
+                             class="accordion-collapse collapse"
+                             aria-labelledby="@headingId"
+                             data-bs-parent="#itineraryAccordion">
+                            <div class="accordion-body pt-4 px-5 text-muted fs-6 leading-relaxed content-fade">
+                                @Html.Raw(item.Content.Replace("\n", "<br />"))
+                            </div>
+                        </div>
+                    </div>
+                    index++;
+                }
+            </div>
+        }
+    </div>
+
+
+
+
+    <!-- ==================== CÁC TOUR KHÁC (SLIDER NGANG) ==================== -->
+    <div class="mt-5 pt-5" data-aos="fade-up" data-aos-duration="1000">
+        <h3 class="section-title text-center mb-5 fw-bold display-6" style="color: #2c3e88;">
+            Các tour khác
+        </h3>
+
+
+
+
+        @if (allOtherTours.Any())
+        {
+            <div id="allToursCarousel" class="carousel slide">
+                <div class="carousel-inner">
+                    @{
+                        var itemsPerSlide = 3;
+                        var chunks = allOtherTours.Chunk(itemsPerSlide).ToList();
+                        var isFirst = true;
+                    }
+
+
+
+
+                    @foreach (var chunk in chunks)
+                    {
+                        <div class="carousel-item @(isFirst ? "active" : "")">
+                            <div class="row g-4 justify-content-center">
+                                @foreach (var tour in chunk)
+                                {
+                                    <div class="col-12 col-sm-6 col-lg-4">
+                                        <div class="card h-100 shadow-sm border-0 overflow-hidden tour-card"
+                                             data-aos="zoom-in" data-aos-duration="800">
+                                            <div class="position-relative">
+                                            @* Ảnh tour – lấy trực tiếp từ DB *@
+                                            @if (!string.IsNullOrEmpty(tour.Destination.ImageUrl))
+                                            {
+                                                <div class="tour-image-wrapper position-relative">
+                                                    <img src="@Url.Content(tour.Destination.ImageUrl)"
+                                                        alt="@tour.Name"
+                                                        class="img-fluid w-100"
+                                                        style="height: 230px; object-fit: cover;" />
+                                                </div>
+                                            }
+                                                @{
+                                                    var days = (tour.EndDate - tour.StartDate).Days + 1;
+                                                }
+                                                <div class="position-absolute top-0 end-0 p-3">
+                                                    <span class="badge bg-primary fs-6">@days ngày</span>
+                                                </div>
+                                            </div>
+                                            <div class="card-body d-flex flex-column">
+                                                <h5 class="card-title fw-bold mb-3">@tour.Name</h5>
+                                                <div class="text-muted small mb-3 flex-grow-1">
+                                                    <div class="mb-2">
+                                                        <i class="fas fa-map-marker-alt me-2"></i>
+                                                        @(tour.Destination?.Name ?? "Chưa xác định")
+                                                    </div>
+                                                    <div>
+                                                        <i class="fas fa-calendar-alt me-2"></i>
+                                                        @tour.StartDate.ToString("dd/MM/yyyy") - @tour.EndDate.ToString("dd/MM/yyyy")
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex justify-content-between align-items-end mt-auto">
+                                                    <h4 class="text-danger fw-bold mb-0">
+                                                        @string.Format("{0:N0}đ", tour.Price)
+                                                    </h4>
+                                                    <a asp-action="Details" asp-route-id="@tour.TourId"
+                                                       class="btn btn-primary rounded-pill px-4 py-2 fw-semibold">
+                                                        Xem chi tiết <i class="fas fa-arrow-right ms-2"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        isFirst = false;
+                    }
+                </div>
+
+
+
+
+                @if (chunks.Count > 1)
+                {
+                    <button class="carousel-control-prev" type="button" data-bs-target="#allToursCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true" style="background-image: none;">
+                            <i class="ri-arrow-left-s-line text-dark fs-1"></i>
+                        </span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+
+
+
+
+                    <button class="carousel-control-next" type="button" data-bs-target="#allToursCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true" style="background-image: none;">
+                            <i class="ri-arrow-right-s-line text-dark fs-1"></i>
+                        </span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+
+
+
+
+                }
+            </div>
+        }
+        else
+        {
+            <p class="text-center text-muted">Hiện chưa có tour nào khác.</p>
+        }
+    </div>
+
+
+
+
+    <!-- ==================== PHẦN ĐÁNH GIÁ ==================== -->
+    <div class="bg-white rounded-4 shadow-sm p-4 p-lg-5 mt-5">
+        <h3 class="fw-bold text-primary mb-4 text-center">
+            Đánh giá từ khách hàng
+            <span id="reviewCount" class="text-muted fs-5">(0 đánh giá)</span>
+        </h3>
+
+
+
+
+        <div class="text-center mb-4">
+            <div class="d-inline-flex align-items-center">
+                <div id="averageStars" class="me-3"></div>
+                <span id="averageText" class="fw-bold fs-4">0 / 5</span>
+            </div>
+        </div>
+
+
+
+
+        <div class="card border-0 shadow-sm p-4 mb-5">
+            <h4 class="fw-bold mb-3">Viết đánh giá của bạn</h4>
+            <form id="reviewForm">
+                <div class="mb-3">
+                    <label class="form-label fw-medium">Tên của bạn</label>
+                    <input type="text" id="userName" class="form-control" placeholder="Ví dụ: Nguyễn Văn A" required />
+                </div>
+
+
+
+
+                <div class="mb-3">
+                    <label class="form-label fw-medium">Đánh giá sao</label>
+                    <div class="star-rating-input d-inline-block">
+                        <input type="hidden" id="selectedRating" value="0" />
+                        <i class="ri-star-line fs-2 star" data-value="5"></i>
+                        <i class="ri-star-line fs-2 star" data-value="4"></i>
+                        <i class="ri-star-line fs-2 star" data-value="3"></i>
+                        <i class="ri-star-line fs-2 star" data-value="2"></i>
+                        <i class="ri-star-line fs-2 star" data-value="1"></i>
+                    </div>
+                    <small class="text-muted d-block">Nhấp vào sao để chọn</small>
+                </div>
+
+
+
+
+                <div class="mb-3">
+                    <label class="form-label fw-medium">Nội dung bình luận</label>
+                    <textarea id="comment" class="form-control" rows="4" placeholder="Chia sẻ trải nghiệm của bạn..." required></textarea>
+                </div>
+
+
+
+
+                <button type="submit" class="btn btn-warning btn-lg rounded-pill fw-bold">
+                    Gửi đánh giá
+                </button>
+            </form>
+        </div>
+
+
+
+
+        <div id="reviewsList">
+            <p class="text-center text-muted">Chưa có đánh giá nào. Hãy là người đầu tiên!</p>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- ==================== MODAL ZOOM ẢNH FULLSCREEN ==================== -->
+<div class="modal fade" id="imageZoomModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-transparent border-0">
+            <div class="modal-header border-0 position-absolute top-0 end-0 z-index-10 p-3">
+                <button type="button" class="btn-close btn-close-white shadow" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 d-flex align-items-center justify-content-center">
+                <img id="zoomedImage"
+                     class="img-fluid"
+                     style="max-height: 100vh; max-width: 100%; object-fit: contain; touch-action: manipulation;"
+                     alt="Zoomed tour image">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<style>
+    .section-title { color: #2c3e88; }
+
+
+
+
+    .btn-warning { background-color: #f1c40f; border: none; }
+    .btn-warning:hover { background-color: #e67e22; }
+
+
+
+
+    .btn-outline-warning { border-color: #f1c40f; color: #f1c40f; }
+    .btn-outline-warning:hover { background-color: #f1c40f; color: #000; }
+
+
+
+
+    .tour-card {
+        transition: all 0.3s ease;
+        border-radius: 1rem;
+    }
+    .tour-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+    }
+    .tour-card .btn-primary {
+        background-color: #fba834;
+        border: none;
+        font-size: 0.9rem;
+    }
+    .tour-card .btn-primary:hover {
+        background-color: #e6961e;
+    }
+    .badge { background-color: #333a73 !important; }
+
+
+
+
+    .star-rating-input { direction: rtl; unicode-bidi: bidi-override; }
+    .star-rating-input .star {
+        cursor: pointer;
+        color: #ccc;
+        transition: color 0.2s;
+    }
+    .star-rating-input .star:hover,
+    .star-rating-input .star:hover ~ .star,
+    .star-rating-input .star.selected,
+    .star-rating-input .star.selected ~ .star {
+        color: #f1c40f !important;
+    }
+
+
+
+
+    .review-item {
+        border-bottom: 1px solid #eee;
+        padding-bottom: 1.2rem;
+        margin-bottom: 1.5rem;
+    }
+    .review-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+
+
+
+
+    /* CSS CHO ZOOM ẢNH */
+    .cursor-pointer {
+        cursor: pointer;
+    }
+    .tour-zoomable {
+        transition: transform 0.3s ease;
+    }
+    .tour-zoomable:hover {
+        transform: scale(1.05);
+    }
+    .z-index-10 {
+        z-index: 10;
+    }
+
+
+
+
+    /* ============== HIỆU ỨNG LỊCH TRÌNH ============== */
+    .itinerary-item {
+        transition: all 0.4s ease;
+        background: #fff;
+    }
+    .itinerary-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.08) !important;
+    }
+
+
+    .day-badge {
+        background: linear-gradient(135deg, #fba834, #f1c40f);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        min-width: 100px;
+        text-align: center;
+    }
+
+
+    .accordion-button {
+        background: linear-gradient(to right, #f8f9fa, #ffffff);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+
+    .accordion-button:not(.collapsed) {
+        background: linear-gradient(to right, #fba834, #f1c40f);
+        color: white !important;
+        box-shadow: 0 10px 25px rgba(251, 168, 52, 0.3);
+    }
+
+
+    .accordion-button:not(.collapsed) .day-badge {
+        background: white;
+        color: #fba834;
+    }
+
+
+    /* Ẩn mũi tên mặc định của Bootstrap */
+    .accordion-button::after {
+        display: none !important;
+    }
+
+
+    /* Icon mũi tên RemIcon */
+    .accordion-button i.ri-arrow-down-s-line {
+        transition: transform 0.4s ease;
+        font-size: 1.5rem;
+        opacity: 0.7;
+    }
+
+
+    .accordion-button:not(.collapsed) i.ri-arrow-down-s-line {
+        transform: rotate(180deg);
+        opacity: 1;
+    }
+
+
+    .content-fade {
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+
+    .accordion-collapse.show .content-fade {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+
+
+
+    @@media (max-width: 991.98px) {
+        .order-1 { order: 1; }
+        .order-2 { order: 2; }
+        .p-4 { padding: 2rem !important; }
+        .display-4 { font-size: 2.5rem; }
+        .d-grid .btn { font-size: 1.1rem; padding: 0.8rem 1rem; }
+    }
+
+
+
+
+    @@media (max-width: 767.98px) {
+        .lead { font-size: 1.1rem; }
+        .mb-5 { margin-bottom: 2rem !important; }
+    }
+</style>
+
+
+
+
+<script>
+    // Hàm zoom ảnh chính
+    function setZoomImage(src, alt) {
+        const zoomedImg = document.getElementById('zoomedImage');
+        zoomedImg.src = src;
+        zoomedImg.alt = alt;
+    }
+
+
+
+
+    // Phần đánh giá (giữ nguyên như cũ)
+    const STORAGE_KEY = "reviews_tour_@Model.TourId";
+    let reviews = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+
+
+
+    function renderStars(rating, container) {
+        container.innerHTML = '';
+        for (let i = 1; i <= 5; i++) {
+            const icon = document.createElement('i');
+           
+            if (i <= Math.floor(rating)) {
+                icon.className = 'ri-star-fill text-warning fs-4';
+            } else if (i - rating < 1 && i - rating > 0) {
+                icon.className = 'ri-star-half-fill text-warning fs-4';
+            } else {
+                icon.className = 'ri-star-line text-muted fs-4';
+            }
+           
+            if (i < 5) {
+                icon.classList.add('me-1');
+            }
+           
+            container.appendChild(icon);
+        }
+    }
+
+
+
+
+    function updateAverage() {
+        const count = reviews.length;
+        document.getElementById('reviewCount').textContent = `(${count} đánh giá)`;
+
+
+
+
+        if (count === 0) {
+            document.getElementById('averageText').textContent = '0 / 5';
+            document.getElementById('averageStars').innerHTML = '';
+            return;
+        }
+
+
+
+
+        const avg = reviews.reduce((sum, r) => sum + r.rating, 0) / count;
+        const rounded = Math.round(avg * 10) / 10;
+
+
+
+
+        document.getElementById('averageText').textContent = rounded.toFixed(1) + ' / 5';
+        renderStars(rounded, document.getElementById('averageStars'));
+    }
+
+
+
+
+    function renderReviews() {
+        const list = document.getElementById('reviewsList');
+        if (reviews.length === 0) {
+            list.innerHTML = '<p class="text-center text-muted">Chưa có đánh giá nào. Hãy là người đầu tiên!</p>';
+            return;
+        }
+
+
+
+
+        list.innerHTML = '';
+        reviews.slice().reverse().forEach(review => {
+            const div = document.createElement('div');
+            div.className = 'review-item';
+
+
+
+
+            const header = document.createElement('div');
+            header.className = 'd-flex justify-content-between align-items-start mb-2';
+
+
+
+
+            const info = document.createElement('div');
+            info.innerHTML = `<strong>${review.name}</strong><span class="text-muted ms-3">${review.date}</span>`;
+
+
+
+
+            const stars = document.createElement('div');
+            renderStars(review.rating, stars);
+
+
+
+
+            header.appendChild(info);
+            header.appendChild(stars);
+
+
+
+
+            const comment = document.createElement('p');
+            comment.className = 'mt-2 text-muted mb-0';
+            comment.textContent = review.comment;
+
+
+
+
+            div.appendChild(header);
+            div.appendChild(comment);
+            list.appendChild(div);
+        });
+    }
+
+
+
+
+    document.querySelectorAll('.star-rating-input .star').forEach(star => {
+        star.addEventListener('click', function () {
+            const value = parseInt(this.getAttribute('data-value'));
+            document.getElementById('selectedRating').value = value;
+            document.querySelectorAll('.star-rating-input .star').forEach(s => {
+                s.classList.toggle('selected', parseInt(s.getAttribute('data-value')) <= value);
+            });
+        });
+
+
+
+
+        star.addEventListener('mouseover', function () {
+            const value = parseInt(this.getAttribute('data-value'));
+            document.querySelectorAll('.star-rating-input .star').forEach(s => {
+                s.style.color = parseInt(s.getAttribute('data-value')) <= value ? '#f1c40f' : '#ccc';
+            });
+        });
+    });
+
+
+
+
+    document.querySelector('.star-rating-input').addEventListener('mouseleave', function () {
+        const selected = parseInt(document.getElementById('selectedRating').value);
+        document.querySelectorAll('.star-rating-input .star').forEach(s => {
+            s.style.color = parseInt(s.getAttribute('data-value')) <= selected ? '#f1c40f' : '#ccc';
+        });
+    });
+
+
+
+
+    document.getElementById('reviewForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+
+
+
+        const name = document.getElementById('userName').value.trim();
+        const rating = parseInt(document.getElementById('selectedRating').value);
+        const comment = document.getElementById('comment').value.trim();
+
+
+
+
+        if (!name || rating === 0 || !comment) {
+            alert('Vui lòng nhập đầy đủ thông tin và chọn số sao!');
+            return;
+        }
+
+
+
+
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('vi-VN');
+
+
+
+
+        reviews.push({ name, rating, comment, date: dateStr });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews));
+
+
+
+
+        this.reset();
+        document.getElementById('selectedRating').value = '0';
+        document.querySelectorAll('.star-rating-input .star').forEach(s => {
+            s.classList.remove('selected');
+            s.style.color = '#ccc';
+        });
+
+
+
+
+        updateAverage();
+        renderReviews();
+    });
+
+
+
+
+    updateAverage();
+    renderReviews();
+</script>
+
+
+

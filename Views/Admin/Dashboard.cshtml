@@ -1,0 +1,267 @@
+@model ToursAndTravelsManagement.ViewModels.DashboardViewModel
+
+@{
+    Layout = "_AuthLayout";
+    ViewData["Title"] = "Dashboard";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-dashboard.css" asp-append-version="true" />
+
+    <style>
+        /* ===== SIDEBAR HOVER ===== */
+        .ad-sidemenu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            color: #374151;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .ad-sidemenu a:hover {
+            background: rgba(251,168,52,0.15);
+            color: #fba834;
+            transform: translateX(4px);
+        }
+
+        .ad-sidemenu a.active {
+            background: rgba(251,168,52,0.25);
+            color: #fba834;
+            font-weight: 600;
+        }
+
+        /* ===== BACK LINK ===== */
+        .ad-back-link {
+            font-size: 14px;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .ad-back-link:hover {
+            color: #fba834;
+            transform: translateX(-4px);
+        }
+
+        /* ===== KPI CARDS ===== */
+        .ad-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 18px;
+            transition: all 0.25s ease;
+        }
+
+        .ad-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        }
+
+        /* ===== FILTER + BUTTON ===== */
+        .ad-select {
+            border-radius: 10px;
+            padding: 6px 10px;
+            transition: all 0.2s ease;
+        }
+
+        .ad-select:hover {
+            border-color: #fba834;
+        }
+
+        .ad-dotbtn {
+            border: none;
+            background: #fba834;
+            color: white;
+            border-radius: 10px;
+            padding: 6px 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .ad-dotbtn:hover {
+            background: #e69500;
+            transform: scale(1.05);
+        }
+
+        /* ===== CHART TABS ===== */
+        .ad-chart-tabs span {
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .ad-chart-tabs span:hover {
+            background: rgba(251,168,52,0.15);
+            color: #fba834;
+        }
+
+        .ad-chart-tabs span.active {
+            background: rgba(251,168,52,0.25);
+            color: #fba834;
+            font-weight: 600;
+        }
+    </style>
+}
+
+<div class="ad-page">
+    <div class="ad-wrap">
+
+        <!-- ================= LEFT SIDEBAR ================= -->
+        <aside class="ad-left">
+            <div class="ad-sidecard">
+                <div class="ad-side-title">My Dashboard</div>
+
+                <nav class="ad-sidemenu">
+                    <a asp-controller="Admin" asp-action="Dashboard"
+                       class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Dashboard" ? "active" : "")">
+                        <span class="ad-ico">📊</span> Overview Dashboard
+                    </a>
+
+                    <a asp-controller="Admin" asp-action="Analyze">
+                        <span class="ad-ico">📈</span> Analyze
+                    </a>
+
+                    <a asp-controller="Admin" asp-action="Export">
+                        <span class="ad-ico">⤓</span> Export
+                    </a>
+
+                    <a asp-controller="Admin" asp-action="Setting">
+                        <span class="ad-ico">⚙️</span> Setting
+                    </a>
+                </nav>
+            </div>
+
+            <div class="ad-motiv">
+                <div class="ad-motiv-text">
+                    Chúc các Admin của VivaVivu một ngày làm việc đầy năng lượng!
+                </div>
+            </div>
+        </aside>
+
+        <!-- ================= MAIN ================= -->
+        <main class="ad-main">
+
+            <!-- ===== TOP BAR ===== -->
+            <div class="ad-topbar">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <a asp-controller="Admin" asp-action="Profile" class="ad-back-link">
+                        ← Quay lại
+                    </a>
+
+                    <h2 class="ad-title">Overview Dashboard</h2>
+                </div>
+
+                <div class="ad-filter">
+                    <form method="get" asp-action="Dashboard" class="d-flex gap-2 align-items-center">
+                        <span class="ad-filter-label">Từ</span>
+                        <input type="date" name="fromDate" value="@ViewBag.FromDate" class="ad-select" />
+
+                        <span class="ad-filter-label">Đến</span>
+                        <input type="date" name="toDate" value="@ViewBag.ToDate" class="ad-select" />
+
+                        <button type="submit" class="ad-dotbtn" title="Lọc dữ liệu">🔍</button>
+                    </form>
+                </div>
+            </div>
+
+            @if (ViewBag.IsFallback == true)
+            {
+                <div style="margin:10px 0 20px; color:#b45309; font-size:14px;">
+                    ⚠️ Dashboard đang hiển thị dữ liệu mẫu do chưa có booking thực.
+                </div>
+            }
+
+            <!-- ================= KPI ================= -->
+            <section class="ad-kpi">
+                <div class="ad-card">
+                    <div class="ad-card-title">Tổng doanh thu</div>
+                    <div class="ad-card-value">@Model.TotalRevenue.ToString("N0")đ</div>
+                </div>
+
+                <div class="ad-card">
+                    <div class="ad-card-title">Tổng số booking</div>
+                    <div class="ad-card-value">@Model.TotalBookings</div>
+                </div>
+
+                <div class="ad-card">
+                    <div class="ad-card-title">Số booking huỷ</div>
+                    <div class="ad-card-value">@Model.CancelledBookings</div>
+                </div>
+
+                <div class="ad-card">
+                    <div class="ad-card-title">Lợi nhuận</div>
+                    <div class="ad-card-value">@Model.Profit.ToString("N0")đ</div>
+                </div>
+            </section>
+
+            <!-- ================= CHART ================= -->
+            <section class="ad-chart">
+                <div class="ad-chart-header">
+                    <div class="ad-chart-tabs">
+                        <span class="active">Show top</span>
+                        <span>Source</span>
+                        <span>Attributions</span>
+                    </div>
+                    <button class="ad-dotbtn">⋮</button>
+                </div>
+
+                <div style="font-size:14px; color:#64748b; margin-bottom:8px;">
+                    Doanh thu từ @ViewBag.FromDate đến @ViewBag.ToDate
+                </div>
+
+                <div class="ad-chart-canvas">
+                    <canvas id="revenueChart" height="120"></canvas>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RevenueLabels));
+        const values = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RevenueValues));
+
+        new Chart(document.getElementById('revenueChart'), {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    data: values,
+                    borderColor: '#fba834',
+                    backgroundColor: 'rgba(251,168,52,0.15)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        ticks: {
+                            callback: v => v.toLocaleString('vi-VN') + 'đ'
+                        }
+                    }
+                }
+            }
+        });
+
+        document.querySelectorAll('.ad-chart-tabs span').forEach(tab => {
+            tab.addEventListener('click', function () {
+                document.querySelectorAll('.ad-chart-tabs span')
+                    .forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                alert('Chức năng này sẽ được phát triển ở giai đoạn tiếp theo.');
+            });
+        });
+    </script>
+}

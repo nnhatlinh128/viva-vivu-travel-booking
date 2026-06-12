@@ -1,0 +1,60 @@
+@model Voucher
+
+@{
+    ViewData["Title"] = "Xóa Voucher";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+
+            <div class="card shadow-xl border-0 rounded-4">
+                <div class="card-body p-4">
+
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold text-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Xác nhận xóa Voucher
+                        </h3>
+                        <p class="text-muted">
+                            Voucher <strong>@Model.Code</strong> sẽ bị xóa vĩnh viễn.
+                        </p>
+                    </div>
+
+                    <hr />
+
+                    <dl class="row mb-4">
+                        <dt class="col-sm-4 text-muted">Giá trị giảm</dt>
+                        <dd class="col-sm-8 fw-semibold">
+                            @(Model.IsPercentage ? $"{Model.DiscountValue}%" : $"{Model.DiscountValue:N0}đ")
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted">Thời gian</dt>
+                        <dd class="col-sm-8">
+                            @Model.StartDate.ToString("dd/MM/yyyy") -
+                            @Model.EndDate.ToString("dd/MM/yyyy")
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted">Số lượt</dt>
+                        <dd class="col-sm-8">@Model.Quantity</dd>
+                    </dl>
+
+                    <form asp-action="Delete" method="post" class="d-flex justify-content-between">
+                        <input type="hidden" asp-for="VoucherId" />
+
+                        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+                            ← Quay lại
+                        </a>
+
+                        <button class="btn btn-danger rounded-pill px-4">
+                            <i class="fas fa-trash-alt me-1"></i> Xóa Voucher
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

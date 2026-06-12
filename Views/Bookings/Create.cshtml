@@ -1,0 +1,109 @@
+﻿@using ToursAndTravelsManagement.Enums
+@model Booking
+
+@{
+    ViewData["Title"] = "Create Booking";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-4">
+
+                    <h3 class="text-center fw-bold mb-4">
+                        @ViewData["Title"]
+                    </h3>
+
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="UserId" class="form-label"></label>
+                            <select asp-for="UserId"
+                                    class="form-select"
+                                    asp-items="ViewBag.UserId">
+                            </select>
+                            <span asp-validation-for="UserId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="TourId" class="form-label"></label>
+                            <select asp-for="TourId"
+                                    class="form-select"
+                                    asp-items="ViewBag.TourId">
+                            </select>
+                            <span asp-validation-for="TourId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="BookingDate" class="form-label"></label>
+                            <input asp-for="BookingDate" type="date" class="form-control" />
+                            <span asp-validation-for="BookingDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="NumberOfParticipants" class="form-label"></label>
+                            <input asp-for="NumberOfParticipants" class="form-control" />
+                            <span asp-validation-for="NumberOfParticipants" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="TotalPrice" class="form-label"></label>
+                            <input asp-for="TotalPrice" class="form-control" />
+                            <span asp-validation-for="TotalPrice" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Status" class="form-label"></label>
+                            <select asp-for="Status"
+                                    class="form-select"
+                                    asp-items="Html.GetEnumSelectList<BookingStatus>()">
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PaymentMethod" class="form-label"></label>
+                            <input asp-for="PaymentMethod" class="form-control" />
+                            <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="PaymentStatus" class="form-label"></label>
+                            <select asp-for="PaymentStatus"
+                                    class="form-select"
+                                    asp-items="Html.GetEnumSelectList<PaymentStatus>()">
+                            </select>
+                            <span asp-validation-for="PaymentStatus" class="text-danger"></span>
+                        </div>
+
+                        <!-- CreatedBy KHÔNG CHO NHẬP -->
+                        <!-- Set trong Controller -->
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary rounded-pill py-2">
+                                Tạo Booking
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <a asp-action="Index" class="text-decoration-none">
+                            ← Quay lại danh sách
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,73 @@
+﻿@model ToursAndTravelsManagement.Models.Tour
+
+@{
+    ViewData["Title"] = "Xóa tour";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+
+            <div class="card shadow-xl border-0 rounded-4">
+                <div class="card-body p-4">
+
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold text-danger mb-2">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Xác nhận xóa tour
+                        </h3>
+                        <p class="text-muted mb-0">
+                            Hành động này <strong>không thể hoàn tác</strong>.
+                            Vui lòng kiểm tra lại thông tin trước khi tiếp tục.
+                        </p>
+                    </div>
+
+                    <hr />
+
+                    <!-- Tour Info -->
+                    <dl class="row mb-4">
+                        <dt class="col-sm-4 text-muted">Tên tour</dt>
+                        <dd class="col-sm-8 fw-semibold">@Model.Name</dd>
+
+                        <dt class="col-sm-4 text-muted">Mô tả</dt>
+                        <dd class="col-sm-8">@Model.Description</dd>
+
+                        <dt class="col-sm-4 text-muted">Ngày bắt đầu</dt>
+                        <dd class="col-sm-8">@Model.StartDate.ToString("dd/MM/yyyy")</dd>
+
+                        <dt class="col-sm-4 text-muted">Ngày kết thúc</dt>
+                        <dd class="col-sm-8">@Model.EndDate.ToString("dd/MM/yyyy")</dd>
+
+                        <dt class="col-sm-4 text-muted">Giá</dt>
+                        <dd class="col-sm-8 text-danger fw-bold">
+                            @Model.Price.ToString("N0")đ
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted">Số người tối đa</dt>
+                        <dd class="col-sm-8">@Model.MaxParticipants</dd>
+
+                        <dt class="col-sm-4 text-muted">Điểm đến</dt>
+                        <dd class="col-sm-8">@Model.Destination?.Name</dd>
+                    </dl>
+
+                    <!-- Actions -->
+                    <form asp-action="Delete" method="post" class="d-flex justify-content-between">
+                        <input type="hidden" asp-for="TourId" />
+
+                        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+                            ← Quay lại
+                        </a>
+
+                        <button type="submit" class="btn btn-danger rounded-pill px-4">
+                            <i class="fas fa-trash-alt me-1"></i>
+                            Xóa tour
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

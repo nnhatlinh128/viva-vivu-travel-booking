@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		body {
+			font-family: 'Helvetica Neue', Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: #ffffff;
+			color: #000000;
+		}
+
+		.email-container {
+			width: 100%;
+			max-width: 700px;
+			margin: 20px auto;
+			background-color: #ffffff;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			animation: fadeIn 1s ease-in;
+			border-top: 5px solid #007bff;
+		}
+
+		.email-header {
+			background-color: #f8f9fa;
+			color: #000000;
+			padding: 40px;
+			text-align: center;
+			border-bottom: 1px solid #e0e0e0;
+		}
+
+			.email-header h1 {
+				margin: 0;
+				font-size: 28px;
+				font-weight: 700;
+			}
+
+		.email-body {
+			padding: 30px;
+		}
+
+			.email-body p {
+				margin: 0 0 20px;
+				line-height: 1.6;
+			}
+
+			.email-body strong {
+				color: #000000;
+			}
+
+		.email-footer {
+			background-color: #f8f9fa;
+			color: #6c757d;
+			text-align: center;
+			padding: 20px;
+			font-size: 14px;
+			border-top: 1px solid #e0e0e0;
+		}
+
+			.email-footer a {
+				color: #007bff;
+				text-decoration: none;
+			}
+
+		.button {
+			display: inline-block;
+			background-color: #007bff;
+			color: #ffffff;
+			padding: 12px 24px;
+			border-radius: 5px;
+			text-decoration: none;
+			font-weight: bold;
+			transition: background-color 0.3s ease, transform 0.2s ease;
+		}
+
+			.button:hover {
+				background-color: #0056b3;
+				transform: scale(1.05);
+			}
+
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(10px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		@media (max-width: 600px) {
+			.email-body {
+				padding: 20px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="email-container">
+		<div class="email-header">
+			<h1>We Received Your Message</h1>
+		</div>
+		<div class="email-body">
+			<p><strong>First Name:</strong> {{FirstName}}</p>
+			<p><strong>Last Name:</strong> {{LastName}}</p>
+			<p><strong>Email:</strong> {{Email}}</p>
+			<p><strong>Subject:</strong> {{Subject}}</p>
+			<p><strong>Message:</strong></p>
+			<p>{{Message}}</p>
+		</div>
+		<div class="email-footer">
+			<p>Thank you for getting in touch with us!</p>
+			<p>If you need further assistance, you can <a href="mailto:{{Email}}">reply to this email</a>.</p>
+			<a href="https://yourwebsite.com" class="button">Visit Our Website</a>
+		</div>
+	</div>
+</body>
+</html>

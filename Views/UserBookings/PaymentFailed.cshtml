@@ -1,0 +1,41 @@
+@{
+    ViewData["Title"] = "Thanh toán thất bại";
+    Layout = "~/Views/Shared/_AnotherLayout.cshtml";
+}
+
+<div class="container py-5 text-center">
+    <div class="card border-0 shadow-lg rounded-4 p-5">
+
+        <!-- Icon -->
+        <div class="mb-4">
+            <i class="ri-close-circle-fill text-danger display-1"></i>
+        </div>
+
+        <!-- Title -->
+        <h2 class="fw-bold mb-3 text-danger">
+            Thanh toán thất bại!
+        </h2>
+
+        <!-- Description -->
+        <p class="text-muted fs-5 mb-4">
+            Giao dịch chưa được hoàn tất hoặc đã bị hủy. 
+            Vui lòng thử lại hoặc chọn phương thức thanh toán khác.
+        </p>
+
+        <!-- Buttons -->
+        <div class="d-flex justify-content-center gap-3">
+            <a asp-controller="UserBookings"
+               asp-action="MyBookings"
+               class="btn btn-primary rounded-pill px-4 py-2">
+                Xem lịch sử booking
+            </a>
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="btn btn-outline-secondary rounded-pill px-4 py-2">
+                Quay về trang chủ
+            </a>
+        </div>
+
+    </div>
+</div>

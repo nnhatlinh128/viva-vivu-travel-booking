@@ -1,0 +1,178 @@
+@model IEnumerable<ToursAndTravelsManagement.ViewModels.AdminUserViewModel>
+
+@{
+    ViewData["Title"] = "Quản lý tài khoản người dùng";
+    Layout = "~/Views/Shared/_AnotherLayout.cshtml";
+}
+
+<div class="container-fluid">
+
+    <!-- ===== HEADER ===== -->
+    <div class="card shadow-xl mb-4">
+        <div class="card-body bg-gradient-primary text-white rounded-4">
+            <h1 class="mb-0 fw-bold text-white header-title">
+                <i class="fas fa-users me-2"></i>
+                Quản Lý Tài Khoản Người Dùng
+            </h1>
+        </div>
+    </div>
+
+    <!-- ===== ACTION BAR (GIỐNG DESTINATION) ===== -->
+    <div class="mb-4 d-flex flex-wrap gap-3 align-items-center">
+        <form method="get" class="d-flex align-items-center gap-2">
+            <label class="fw-semibold mb-0">Lọc theo role:</label>
+            <select name="roleFilter"
+                    class="form-select form-select-sm w-auto"
+                    onchange="this.form.submit()">
+                <option value="">Tất cả</option>
+                <option value="Admin" selected="@(ViewBag.RoleFilter == "Admin")">Admin</option>
+                <option value="User" selected="@(ViewBag.RoleFilter == "User")">User</option>
+            </select>
+        </form>
+    </div>
+
+    <!-- ===== TABLE ===== -->
+    <div class="card shadow-xl">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle mb-0">
+                <thead class="bg-light-purple">
+                    <tr class="text-primary text-uppercase small">
+                        <th>Email</th>
+                        <th>UserName</th>
+                        <th style="width:160px;">Role</th>
+                        <th>Trạng thái</th>
+                        <th class="text-center" style="width:160px;">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr class="table-row-hover hover-lift">
+
+                        <td>@user.Email</td>
+
+                        <td class="fw-semibold">
+                            @user.UserName
+                        </td>
+
+                        <!-- ROLE -->
+                        <td>
+                            <form asp-action="ChangeRole" method="post">
+                                <input type="hidden" name="userId" value="@user.UserId" />
+                                <select name="newRole"
+                                        class="form-select form-select-sm"
+                                        onchange="this.form.submit()">
+                                    <option value="Admin" selected="@(user.Role == "Admin")">Admin</option>
+                                    <option value="User" selected="@(user.Role == "User")">User</option>
+                                </select>
+                            </form>
+                        </td>
+
+                        <!-- STATUS -->
+                        <td>
+                            @if (user.IsLocked)
+                            {
+                                <span class="badge bg-danger">Bị khóa</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Hoạt động</span>
+                            }
+                        </td>
+
+                        <!-- ACTION -->
+                        <td class="text-center">
+                            @if (user.IsLocked)
+                            {
+                                <form asp-action="UnlockUser" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@user.UserId" />
+                                    <button class="btn btn-sm btn-outline-success">
+                                        Mở khóa
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="LockUser" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@user.UserId" />
+                                    <button class="btn btn-sm btn-outline-danger">
+                                        Khóa
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== PAGINATION PLACEHOLDER (GIỮ NHỊP LAYOUT) ===== -->
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+                <span class="page-link">Previous</span>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">Next</span>
+            </li>
+        </ul>
+    </nav>
+
+</div>
+
+<style>
+    :root {
+        --primary-purple: #2c3e88;
+        --primary-dark: #1e2a5e;
+        --light-purple: #f8f5ff;
+        --bg-light-purple: #e8e0ff;
+    }
+
+    .header-title {
+        letter-spacing: 1px;
+        text-shadow: 0 4px 12px rgba(0,0,0,0.35);
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, var(--primary-purple), var(--primary-dark)) !important;
+    }
+
+    .bg-light-purple {
+        background-color: var(--bg-light-purple) !important;
+    }
+
+    .text-primary {
+        color: var(--primary-purple) !important;
+    }
+
+    .table-row-hover:hover {
+        background-color: var(--light-purple) !important;
+        transition: all 0.3s ease;
+    }
+
+    .hover-lift {
+        transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.12) !important;
+    }
+
+    .shadow-xl {
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+    }
+
+    .card {
+        border-radius: 1.5rem;
+    }
+
+    @@media (max-width: 768px) {
+        table {
+            font-size: 0.9rem;
+        }
+    }
+</style>

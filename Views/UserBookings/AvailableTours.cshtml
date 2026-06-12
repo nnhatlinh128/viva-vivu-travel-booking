@@ -1,0 +1,30 @@
+﻿@model IEnumerable<ToursAndTravelsManagement.Models.Tour>
+
+@{
+    ViewData["Title"] = "Available Tours";
+}
+
+<div class="tours-container">
+    <h1 class="title">@ViewData["Title"]</h1>
+
+    <div class="tours-grid">
+        @foreach (var tour in Model)
+        {
+            <div class="card">
+                @if (!string.IsNullOrEmpty(tour.Destination?.ImageUrl))
+                {
+                    <img src="@tour.Destination.ImageUrl" alt="@tour.Name" class="card-image" />
+                }
+                <div class="card-content">
+                    <h2 class="card-title">@tour.Name</h2>
+                    <p class="card-description">@tour.Description</p>
+                    <div class="card-meta">
+                        <span class="card-price">$@tour.Price</span>
+                        <span class="card-dates">@tour.StartDate.ToShortDateString() - @tour.EndDate.ToShortDateString()</span>
+                    </div>
+                    <a href="@Url.Action("BookTour", "UserBookings", new { id = tour.TourId })" class="card-button">Book Now</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>

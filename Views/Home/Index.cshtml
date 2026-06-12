@@ -1,0 +1,762 @@
+﻿@model ToursAndTravelsManagement.Services.EmailService.ContactFormModel
+@{
+    ViewData["Title"] = "Trang chủ";
+    Layout = "~/Views/Shared/_AnotherLayout.cshtml";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+
+<!-- ==================== 1. BANNER CHÍNH (HERO SLIDER) ==================== -->
+<!-- Slider lớn ở đầu trang, có 2 hình tròn trang trí-->
+<section id="hero" class="min-vh-100 d-flex align-items-center position-relative overflow-hidden"
+         style="background: #2c3e88;">
+    <div id="heroCarousel" class="carousel slide w-100 h-100" data-bs-ride="carousel" data-bs-interval="7000">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        </div>
+
+
+        <div class="carousel-inner h-100">
+            <div class="carousel-item active h-100">
+                <div class="container position-relative z-2 h-100">
+                    <div class="row align-items-center h-100">
+                        <div class="col-lg-6 col-12 text-center text-lg-start">
+                            <h1 class="display-2 fw-bold text-white mb-4 lh-base animate__animated">
+                                Hơn <span class="text-warning">1000+ tour</span>,<br>
+                                khám phá ngay
+                            </h1>
+                            <p class="lead text-white opacity-90 mb-5 animate__animated" style="font-size: 1.2rem; line-height: 1.7;">
+                                Tìm kiếm & đặt ngay hàng ngàn tour du lịch khắp Việt Nam và<br>
+                                thế giới với ưu đãi tốt nhất cùng Viva Vivu nhé.
+                            </p>
+                            <a class="btn btn-warning btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg hover-lift mt-3 animate__animated" asp-area="" asp-controller="Tours" asp-action="PublicTours">
+                                Khám phá ngay <i class="ri-arrow-right-line ms-1"></i>
+                            </a>
+                        </div>
+
+
+                        <!-- 2 hình tròn trang trí - ẩn trên mobile -->
+                        <div class="col-lg-6 col-12 text-center text-lg-end d-none d-lg-block">
+                            <div class="hero-circles position-relative d-inline-block">
+                                <div class="circle-back">
+                                    <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200&auto=format&fit=crop&q=85"
+                                         alt="Tour Nhật Bản" class="rounded-circle shadow-lg">
+                                </div>
+                                <div class="circle-front">
+                                    <img src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=1200&auto=format&fit=crop&q=85"
+                                         alt="Tour Nhật Bản mùa thu" class="rounded-circle shadow-lg">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="carousel-item h-100">
+                <div class="container position-relative z-2 h-100">
+                    <div class="row align-items-center h-100">
+                        <div class="col-lg-6 col-12 text-center text-lg-start">
+                            <h1 class="display-2 fw-bold text-white mb-4 lh-base animate__animated">
+                                <span class="text-warning">Tận hưởng</span> <br>
+                                và <span class="text-warning">Khám phá</span>
+                            </h1>
+                            <p class="lead text-white opacity-90 mb-5 animate__animated" style="font-size: 1.2rem; line-height: 1.7;">
+                                Khám phá kho tàng hơn 100 tour được tuyển chọn kỹ lưỡng,<br>
+                                 từ những cung đường tuyệt đẹp của Việt Nam đến các kỳ quan trên thế giới.
+                            </p>
+                            <a class="btn btn-warning btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg hover-lift mt-3 animate__animated" asp-area="" asp-controller="Tours" asp-action="PublicTours">
+                                Khám phá ngay <i class="ri-arrow-right-line ms-1"></i>
+                            </a>
+                        </div>
+
+
+                        <!-- 2 hình tròn trang trí - ẩn trên mobile -->
+                        <div class="col-lg-6 col-12 text-center text-lg-end d-none d-lg-block">
+                            <div class="hero-circles position-relative d-inline-block">
+                                <div class="circle-back">
+                                    <img src="https://i.pinimg.com/736x/32/b0/50/32b050f9f375d158b2e3dd20c9b11553.jpg"
+                                         alt="Trung quốc" class="rounded-circle shadow-lg">
+                                </div>
+                                <div class="circle-front">
+                                    <img src="https://i.pinimg.com/736x/4f/21/56/4f21561611565c9ec124db26985e4898.jpg"
+                                         alt="Sri Lanka" class="rounded-circle shadow-lg">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</section>
+
+
+<!-- Hiệu ứng text khi chuyển slide -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const carousel = document.querySelector('#heroCarousel');
+        const carouselInstance = new bootstrap.Carousel(carousel);
+
+
+        function animateText() {
+            const activeSlide = carousel.querySelector('.carousel-item.active');
+            const h1 = activeSlide.querySelector('h1');
+            const p = activeSlide.querySelector('p');
+            const btn = activeSlide.querySelector('a.btn');
+
+
+            h1.className = 'display-2 fw-bold text-white mb-4 lh-base animate__animated animate__fadeInDown';
+            p.className = 'lead text-white opacity-90 mb-5 animate__animated animate__fadeInUp';
+            btn.className = 'btn btn-warning btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg hover-lift mt-3 animate__animated animate__fadeInUp animate__delay-1s';
+        }
+
+
+        animateText();
+        carousel.addEventListener('slid.bs.carousel', function () {
+            animateText();
+        });
+    });
+</script>
+
+
+<!-- ==================== 2. THANH TÌM KIẾM TOUR ==================== -->
+<!-- Thanh tìm kiếm chồng lên banner-->
+<section class="tour-search-section position-relative" style="margin-top: -11px; z-index: 10;">
+    <div class="container">
+        <div class="search-bar-modern bg-white rounded-pill shadow-xl border border-4 border-warning px-4 py-3">
+            <form class="row g-2 g-md-3 align-items-center justify-content-center" id="search-form">
+                <div class="col-12 col-md-4 col-lg-3">
+                    <div class="position-relative">
+                        <i class="ri-map-pin-line text-warning position-absolute top-50 start-3 translate-middle-y fs-5"></i>
+                        <select class="form-select border-0 shadow-none ps-5 py-3"
+                                id="tour-type-select" required>
+                            <option value="" disabled selected>Bạn muốn đi đâu?</option>
+                            <option value="domestic">Tour trong nước</option>
+                            <option value="international">Tour quốc tế</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="col-12 col-md-3 col-lg-3">
+                    <div class="position-relative">
+                        <i class="ri-calendar-line text-warning position-absolute top-50 start-3 translate-middle-y fs-5"></i>
+                        <select class="form-select border-0 shadow-none ps-5 py-3" id="month-select" style="font-size: 0.95rem;">
+                            <option value="" disabled selected>Ngày khởi hành</option>
+                            <option value="12">Tháng 12/2025</option>
+                            <option value="1">Tháng 1/2026</option>
+                            <option value="2">Tháng 2/2026</option>
+                            <option value="3">Tháng 3/2026</option>
+                            <option value="4">Tháng 4/2026</option>
+                            <option value="5">Tháng 5/2026</option>
+                            <option value="6">Tháng 6/2026</option>
+                            <option value="7">Tháng 7/2026</option>
+                            <option value="8">Tháng 8/2026</option>
+                            <option value="9">Tháng 9/2026</option>
+                            <option value="10">Tháng 10/2026</option>
+                            <option value="11">Tháng 11/2026</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="col-12 col-md-3 col-lg-3">
+                    <div class="position-relative">
+                        <i class="ri-money-dollar-circle-line text-warning position-absolute top-50 start-3 translate-middle-y fs-5"></i>
+                        <select class="form-select border-0 shadow-none ps-5 py-3" id="price-select" style="font-size: 0.95rem;">
+                            <option value="" selected>Chọn mức giá</option>
+                            <option value="under10">Dưới 10 triệu</option>
+                            <option value="10to20">10 - 20 triệu</option>
+                            <option value="20to30">20 - 30 triệu</option>
+                            <option value="over30">Trên 30 triệu</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="col-12 col-md-2 col-lg-3">
+                    <button type="submit" class="btn btn-warning btn-lg w-100 rounded-pill fw-bold py-3 shadow-lg hover-lift">
+                        Tìm kiếm
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    document.getElementById('search-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+
+        const tourType = document.getElementById('tour-type-select').value;
+        const month = document.getElementById('month-select').value;
+        const price = document.getElementById('price-select').value;
+
+
+        if (!tourType) {
+            alert('Vui lòng chọn loại tour!');
+            return;
+        }
+
+
+        let url = '';
+
+
+        if (tourType === 'domestic') {
+            url = '/Tours/Domestic';
+        } else if (tourType === 'international') {
+            url = '/Tours/International';
+        }
+
+
+        const params = [];
+
+
+        if (month) params.push(`month=${month}`);
+        if (price) params.push(`price=${price}`);
+
+
+        if (params.length > 0) {
+            url += '?' + params.join('&');
+        }
+
+
+        window.location.href = url;
+    });
+</script>
+
+
+
+
+<!-- ==================== 3. ĐỊA ĐIỂM NỔI BẬT ==================== -->
+<section id="portfolio" class="section-padding bg-light pt-120">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5" data-aos="fade-down">
+                <h1 class="display-4 fw-semibold">Những địa điểm đáng đi nhất trên thế giới</h1>
+            </div>
+        </div>
+        <div class="row g-5 justify-content-center">
+            <div class="col-lg-4 col-md-6 col-11" data-aos="fade-up" data-aos-delay="100">
+                <div class="destination-card position-relative overflow-hidden rounded-4 shadow-lg">
+                    <img src="https://i.pinimg.com/736x/53/00/42/53004261961a83dbd195c3c73926803b.jpg"
+                         class="img-fluid w-100" alt="Machu Picchu, Peru">
+                    <div class="caption-overlay position-absolute bottom-0 start-0 end-0 bg-white p-4">
+                        <h5 class="fw-semibold mb-0">Machu Picchu, Peru</h5>
+                        <a class="text-dark text-decoration-none small fw-medium" asp-area="" asp-controller="Tours" asp-action="PublicTours">
+                            Khám phá ngay <i class="ri-arrow-right-line ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-lg-4 col-md-6 col-11" data-aos="fade-up" data-aos-delay="200">
+                <div class="destination-card position-relative overflow-hidden rounded-4 shadow-lg">
+                    <img src="https://i.pinimg.com/1200x/2a/b5/26/2ab5266cef153a8090b94ba8391fcad3.jpg"
+                         class="img-fluid w-100" alt="Đền Angkor, Campuchia">
+                    <div class="caption-overlay position-absolute bottom-0 start-0 end-0 bg-white p-4">
+                        <h5 class="fw-semibold mb-0">Đền Angkor, Campuchia</h5>
+                        <a class="text-dark text-decoration-none small fw-medium" asp-area="" asp-controller="Tours" asp-action="PublicTours">
+                            Khám phá ngay <i class="ri-arrow-right-line ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-lg-4 col-md-6 col-11" data-aos="fade-up" data-aos-delay="300">
+                <div class="destination-card position-relative overflow-hidden rounded-4 shadow-lg">
+                    <img src="https://i.pinimg.com/736x/3c/cc/a4/3ccca4f3fa9629fcc93bc99a7fff8cdc.jpg"
+                         class="img-fluid w-100" alt="Kim tự tháp Giza, Ai Cập">
+                    <div class="caption-overlay position-absolute bottom-0 start-0 end-0 bg-white p-4">
+                        <h5 class="fw-semibold mb-0">Kim tự tháp Giza, Ai Cập</h5>
+                        <a class="text-dark text-decoration-none small fw-medium" asp-area="" asp-controller="Tours" asp-action="PublicTours">
+                            Khám phá ngay <i class="ri-arrow-right-line ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ==================== 4. KHUYẾN MÃI 20% LẦN ĐẦU ==================== -->
+<section id="promotion" class="section-padding" style="background-color: #333a73">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7 col-12 text-center text-lg-start">
+                <h1 class="display-3 fw-bold mb-4" style="color: white;"
+                    data-aos="fade-right" data-aos-duration="1000" data-aos-once="true">
+                    Nhận ưu đãi ngay<br>khi đặt tour lần đầu tiên
+                </h1>
+                <p class="lead mb-4 opacity-90" style="color: white;"
+                    data-aos="fade-right" data-aos-delay="300" data-aos-duration="1000" data-aos-once="true">
+                    Đừng bỏ lỡ ưu đãi độc quyền dành riêng cho khách hàng mới! Nhận ngay giảm giá 20% khi lần đầu tiên đặt tour. Ưu đãi này chỉ áp dụng cho khách hàng mới và có thời hạn, hãy nhanh tay đăng ký và cùng chúng tôi khám phá thế giới!
+                </p>
+                <a class="btn btn-warning btn-lg px-5 py-3 fw-bold text-dark" style="color: white; asp-area="" asp-controller="Tours" asp-action="PublicTours""
+                    data-aos="fade-up" data-aos-delay="600" data-aos-duration="1000" data-aos-once="true">
+                    Đặt ngay
+                </a>
+            </div>
+
+
+            <!-- Chữ 20% OFF lớn - ẩn trên mobile -->
+            <div class="col-lg-5 col-12 text-center d-none d-lg-block">
+                <div class="position-relative">
+                    <div class="position-absolute top-50 end-0 translate-middle-y me-lg-5"
+                         data-aos="zoom-in-left" data-aos-delay="400" data-aos-duration="1200" data-aos-once="true">
+                        <h1 class="display-1 fw-bold text-warning" style="font-size: 12rem; text-shadow: 3px 3px 10px rgba(0,0,0,0.5);">
+                            20% <span class="d-block fs-1">OFF</span>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ==================== 5. ƯU ĐÃI TỐT NHẤT HÔM NAY ==================== -->
+<section id="best-offers" class="section-padding bg-light position-relative">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center" data-aos="fade-down">
+                <h2 class="display-4 fw-bold text-dark mb-3">Ưu đãi tốt nhất hôm nay</h2>
+            </div>
+        </div>
+
+
+        @if (ViewBag.BestOfferTours != null && ((IEnumerable<dynamic>)ViewBag.BestOfferTours).Any())
+        {
+            var tours = (List<Tour>)ViewBag.BestOfferTours;
+
+
+            <div id="bestOffersCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
+                <div class="carousel-inner">
+                    @for (int i = 0; i < tours.Count; i += 3)
+                    {
+                        var toursInSlide = tours.Skip(i).Take(3).ToList();
+                        var isActive = i == 0 ? "active" : "";
+
+
+                        <div class="carousel-item @isActive">
+                            <div class="row g-5 justify-content-center">
+                                @foreach (var tour in toursInSlide)
+                                {
+                                    var durationDays = (tour.EndDate - tour.StartDate).Days + 1;
+
+
+                                    <div class="col-lg-4 col-md-6">
+                                        <div class="offer-card rounded-4 overflow-hidden shadow-sm h-100 bg-white position-relative hover-lift tour-item"
+                                             data-price="@tour.Price"
+                                             data-destination="@(tour.Destination?.Name ?? "")"
+                                             data-duration="@durationDays"
+                                             data-name="@tour.Name">
+
+
+                                            @* Ảnh tour + Badge ưu đãi *@
+                                            @if (!string.IsNullOrEmpty(tour.Destination.ImageUrl))
+                                            {
+                                                <div class="tour-image-wrapper position-relative">
+                                                    <!-- Badge -20% -->
+                                                    <div class="position-absolute top-0 start-0 m-3 z-3">
+                                                        <span class="badge bg-danger fs-6 px-3 py-2 rounded-pill shadow">
+                                                            -20%
+                                                        </span>
+                                                    </div>
+
+
+                                                    <img src="@Url.Content(tour.Destination.ImageUrl)"
+                                                         alt="@tour.Name"
+                                                         class="img-fluid w-100"
+                                                         style="height: 230px; object-fit: cover;" />
+                                                </div>
+                                            }
+
+
+                                            <!-- Thông tin tour -->
+                                            <div class="p-4">
+                                                <h3 class="h5 fw-bold mb-3">@tour.Name</h3>
+
+
+                                                <div class="row g-3 text-muted small mb-3">
+                                                    <div class="col-12">
+                                                        <i class="fas fa-map-marker-alt me-2"></i>
+                                                        <strong>Điểm đến:</strong> @(tour.Destination?.Name ?? "Chưa xác định")
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <i class="fas fa-calendar-alt me-2"></i>
+                                                        <strong>Thời gian:</strong>
+                                                        @tour.StartDate.ToString("dd/MM/yyyy") - @tour.EndDate.ToString("dd/MM/yyyy")
+                                                        (@durationDays ngày)
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <i class="fas fa-users me-2"></i>
+                                                        <strong>Số lượng:</strong> Tối đa @tour.MaxParticipants khách
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="d-flex align-items-end justify-content-between mt-4">
+                                                    <div>
+                                                        <h4 class="fw-bold text-danger mb-0 fs-3">
+                                                            @tour.Price.ToString("N0") VNĐ
+                                                        </h4>
+                                                    </div>
+                                                    <a asp-controller="Tours" asp-action="Details" asp-route-id="@tour.TourId"
+                                                       class="btn btn-primary rounded-pill px-4 py-2 fw-semibold">
+                                                        Xem chi tiết <i class="fas fa-arrow-right ms-2"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+
+                                <!-- Đệm nếu thiếu tour -->
+                                @if (toursInSlide.Count < 3)
+                                {
+                                    for (int j = toursInSlide.Count; j < 3; j++)
+                                    {
+                                        <div class="col-lg-4 col-md-6 d-none d-md-block"></div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+
+
+                <!-- Controls -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#bestOffersCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" style="filter: invert(1);"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#bestOffersCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" style="filter: invert(1);"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        }
+        else
+        {
+            <p class="text-center text-muted fs-4">Hiện chưa có tour ưu đãi nào.</p>
+        }
+
+
+        <div class="text-center mt-5">
+            <a asp-controller="Tours" asp-action="PublicTours"
+               class="btn btn-outline-dark btn-lg px-5 py-3 rounded-pill fw-medium">
+                Xem tất cả tours
+            </a>
+        </div>
+    </div>
+</section>
+
+
+<!-- Style (đã xóa phần dimmed-tour) -->
+<style>
+    .btn-primary {
+        background-color: #fba834;
+        border: none;
+        transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+        background-color: #e6961e;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(251, 168, 52, 0.4);
+    }
+    .tour-item, .offer-card {
+        transition: transform 0.3s ease;
+    }
+    .tour-item:hover, .offer-card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+
+
+<!-- ==================== 6. POPUP ĐĂNG KÝ EMAIL ==================== -->
+<!-- Popup mời đăng ký nhận tin ưu đãi, hiện sau 3 giây -->
+<div class="modal fade" id="subscribePopup" tabindex="-1" aria-labelledby="subscribePopupLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content overflow-hidden" style="border: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <div class="row g-0">
+                <div class="col-md-6 d-none d-md-block p-0">
+                    <img src="https://i.pinimg.com/736x/fa/55/82/fa5582e5941c5cdc884a92ea489fcaab.jpg"
+                         alt="Viva Vivu" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                </div>
+
+
+                <div class="col-md-6 bg-white d-flex align-items-center">
+                    <div class="p-4 p-lg-5 position-relative w-100">
+                        <button type="button" class="btn-close position-absolute top-0 end-0 mt-3 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                       
+                        <h3 class="fw-bold mb-3 text-center" style="color: #fba834; font-size: 1.8rem;">
+                            Nhận thông báo mới
+                        </h3>
+                       
+                        <p class="text-muted text-center mb-4" style="font-size: 1rem;">
+                            Đăng ký email để nhận thông tin về tour mới,<br>
+                            chương trình giảm giá đặc biệt
+                        </p>
+
+
+                        <form id="subscribeForm" class="mb-4">
+                            <div class="mb-3">
+                                <input type="email" class="form-control rounded-pill py-2 text-center w-100"
+                                       placeholder="Địa chỉ email của bạn" required
+                                       style="border: 1px solid #ced4da; font-size: 1rem; height: 48px;">
+                            </div>
+                           
+                            <button type="submit" class="btn w-100 rounded-pill fw-bold subscribe-btn py-3" style="background-color: #333a73; color:white;">
+                                Đăng ký!
+                            </button>
+                        </form>
+
+
+                        <p class="small text-muted text-center mb-0">
+                            Bằng cách đăng ký, bạn đồng ý nhận các ưu đãi của Viva Vivu. Chương trình khuyến mãi và các thông tin mới nhất. Bạn có thể bỏ đăng ký bất cứ lúc nào.
+                        </p>
+
+
+                        <div class="text-center mt-4">
+                            <a href="#" data-bs-dismiss="modal"
+                               class="text-muted small no-thanks-link">
+                                Không, cảm ơn
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .subscribe-btn {
+        background-color: #333a73;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(51, 58, 115, 0.3);
+        font-size: 1.1rem;
+    }
+
+
+    .subscribe-btn:hover {
+        background-color: #2c3e88 !important;
+        transform: translateY(-4px);
+        box-shadow: 0 10px 30px rgba(44, 62, 136, 0.4);
+        color: white !important;
+    }
+
+
+    .no-thanks-link {
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    .no-thanks-link:hover {
+        text-decoration: underline;
+        transform: translateY(-2px);
+        color: #2c3e88 !important;
+    }
+</style>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            var popup = new bootstrap.Modal(document.getElementById('subscribePopup'));
+            popup.show();
+        }, 3000);
+    });
+</script>
+
+
+<style>
+    .hero {
+        min-height: 100vh;
+        background: #333a73;
+        padding: 0;
+    }
+
+
+    .hero-circles {
+        width: 560px; height: 560px; position: relative;
+    }
+    .circle-back  { width: 420px; height: 420px; position: absolute; top: 50px; right: 0; border-radius: 50%; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,.4); }
+    .circle-front { width: 340px; height: 340px; position: absolute; bottom: 0; right: -50px; border-radius: 50%; overflow: hidden; box-shadow: 0 30px 70px rgba(0,0,0,.45); z-index: 2; }
+    .circle-back img, .circle-front img {
+        width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease;
+    }
+    .circle-back:hover img, .circle-front:hover img { transform: scale(1.08); }
+
+
+    .hover-lift { transition: transform .3s ease, box-shadow .3s ease; }
+    .hover-lift:hover { transform: translateY(-8px); box-shadow: 0 15px 35px #97651f!important; }
+
+
+    .tour-search-section {
+        margin-top: -100px;
+        z-index: 10;
+        pointer-events: none;
+    }
+    .tour-search-section > .container { pointer-events: all; }
+
+
+    .search-bar-modern {
+        max-width: 960px;
+        margin: 0 auto;
+        background: rgba(255,255,255,.97);
+        backdrop-filter: blur(20px);
+        border: 4px solid #fba834;
+        border-radius: 60px;
+        box-shadow: 0 20px 50px rgba(0,0,0,.2);
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        min-height: 76px;
+    }
+    .search-bar-modern .position-relative i {
+        color: #fba834;
+        font-size: 1.3rem;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .search-bar-modern .form-control,
+    .search-bar-modern .form-select {
+        height: 56px;
+        background: transparent;
+        border: none;
+        padding-left: 52px;
+        font-weight: 500;
+        font-size: 1rem;
+    }
+    .search-bar-modern .form-control:focus,
+    .search-bar-modern .form-select:focus {
+        background: #fffbeb;
+        box-shadow: none;
+    }
+    .search-bar-modern .btn-warning {
+        height: 56px;
+        min-width: 150px;
+        background: #fba834;
+        border: none;
+        font-weight: 700;
+        border-radius: 50px;
+        box-shadow: 0 0 8px 25px #bc7e27;
+    }
+    .search-bar-modern .btn-warning:hover {
+        background: #fba834;
+        transform: translateY(-4px);
+        box-shadow: 0 14px 35px #bc7e27;
+    }
+
+
+    .destination-card, .offer-card {
+        transition: all .4s ease;
+        height: 100%;
+    }
+    .destination-card:hover, .offer-card:hover {
+        transform: translateY(-16px);
+        box-shadow: 0 30px 60px rgba(0,0,0,.22)!important;
+    }
+    .destination-card img, .offer-card img {
+        transition: transform .5s ease;
+    }
+    .destination-card:hover img, .offer-card:hover img {
+        transform: scale(1.08);
+    }
+
+
+    @@media (max-width: 1400px) {
+        .hero-circles { width: 500px; height: 500px; }
+        .circle-back { width: 380px; height: 380px; }
+        .circle-front { width: 310px; height: 310px; right: -40px; }
+    }
+
+
+    @@media (max-width: 1200px) {
+        .hero h1 { font-size: 3.8rem !important; }
+        .hero-circles { width: 460px; height: 460px; }
+        .circle-back { width: 340px; height: 340px; }
+        .circle-front { width: 280px; height: 280px; }
+        .search-bar-modern { max-width: 840px; }
+    }
+
+
+    @@media (max-width: 992px) {
+        .hero h1 { font-size: 3.2rem !important; text-align: center; }
+        .hero p { text-align: center; font-size: 1.1rem; }
+        .hero .btn { margin: 20px auto 0; display: block; width: fit-content; }
+        .hero-circles { width: 420px; height: 420px; margin: 40px auto 0; }
+        .circle-back { width: 310px; height: 310px; top: 30px; right: 50%; transform: translateX(50%); }
+        .circle-front { width: 260px; height: 260px; bottom: -40px; right: 15%; }
+        .tour-search-section { margin-top: -70px; }
+        .search-bar-modern { max-width: 680px; }
+    }
+
+
+    @@media (max-width: 768px) {
+        .hero { text-align: center; padding: 120px 0 80px; }
+        .hero h1 { font-size: 2.8rem !important; }
+        .hero p br { display: none; }
+        .hero-circles { display: none; } /* Ẩn hoàn toàn 2 circle trên mobile */
+        .tour-search-section { margin-top: -50px; }
+        }
+        .search-bar-modern {
+            max-width: 96%;
+            height: auto;
+            flex-direction: column;
+            padding: 20px 16px;
+            border-radius: 32px;
+            gap: 14px;
+        }
+        .search-bar-modern .row { width: 100%; margin: 0; }
+        .search-bar-modern .col-12 { margin-bottom: 0; }
+        .search-bar-modern .form-control,
+        .search-bar-modern .form-select { height: 52px; font-size: 0.95rem; }
+        .search-bar-modern .btn-warning { width: 100%; height: 54px; font-size: 1.05rem; }
+
+
+        #portfolio .destination-card { height: 440px; }
+        #best-offers .offer-card img { height: 220px; }
+    }
+
+
+    @@media (max-width: 576px) {
+        .hero h1 { font-size: 2.4rem !important; }
+        .hero p { font-size: 1rem; }
+        #portfolio h1, #best-offers h2 { font-size: 2rem !important; }
+        #portfolio .destination-card { height: 400px; }
+        #promotion h1 { font-size: 2.4rem !important; text-align: center; }
+        #promotion .display-1 { display: none; } /* Ẩn chữ 20% OFF trên mobile */
+    }
+
+
+    @@media (max-width: 400px) {
+        .hero h1 { font-size: 2.1rem !important; }
+        .search-bar-modern { padding: 16px; border-radius: 28px; }
+        .search-bar-modern .form-control,
+        .search-bar-modern .form-select { height: 48px; font-size: 0.9rem; }
+        .search-bar-modern .btn-warning { height: 50px; font-size: 1rem; }
+    }
+</style>
+

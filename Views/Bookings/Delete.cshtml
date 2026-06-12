@@ -1,0 +1,94 @@
+﻿@model ToursAndTravelsManagement.Models.Booking
+
+@{
+    ViewData["Title"] = "Xóa đặt tour";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+
+            <div class="card shadow-xl border-0 rounded-4">
+                <div class="card-body p-4">
+
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold text-danger mb-2">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Xác nhận xóa đơn đặt tour
+                        </h3>
+                        <p class="text-muted mb-0">
+                            Việc xóa đơn đặt tour sẽ làm mất toàn bộ thông tin liên quan.
+                            Hành động này <strong>không thể hoàn tác</strong>.
+                        </p>
+                    </div>
+
+                    <hr />
+
+                    <!-- Booking Info -->
+                    <dl class="row mb-4">
+                        <dt class="col-sm-4 text-muted">Khách hàng</dt>
+                        <dd class="col-sm-8 fw-semibold">@Model.User?.UserName</dd>
+
+                        <dt class="col-sm-4 text-muted">Tour</dt>
+                        <dd class="col-sm-8 fw-semibold">@Model.Tour?.Name</dd>
+
+                        <dt class="col-sm-4 text-muted">Ngày đặt</dt>
+                        <dd class="col-sm-8">
+                            @Model.BookingDate.ToString("dd/MM/yyyy HH:mm")
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted">Số người</dt>
+                        <dd class="col-sm-8">@Model.NumberOfParticipants</dd>
+
+                        <dt class="col-sm-4 text-muted">Tổng tiền</dt>
+                        <dd class="col-sm-8 fw-bold text-danger">
+                            @Model.TotalPrice.ToString("N0")đ
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted">Trạng thái đơn</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-info text-dark">
+                                @Model.Status
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted">Phương thức thanh toán</dt>
+                        <dd class="col-sm-8">@Model.PaymentMethod</dd>
+
+                        <dt class="col-sm-4 text-muted">Trạng thái thanh toán</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-warning text-dark">
+                                @Model.PaymentStatus
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted">Người tạo</dt>
+                        <dd class="col-sm-8">@Model.CreatedBy</dd>
+
+                        <dt class="col-sm-4 text-muted">Ngày tạo</dt>
+                        <dd class="col-sm-8">
+                            @Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")
+                        </dd>
+                    </dl>
+
+                    <!-- Actions -->
+                    <form asp-action="Delete" method="post" class="d-flex justify-content-between">
+                        <input type="hidden" asp-for="BookingId" />
+
+                        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+                            ← Quay lại
+                        </a>
+
+                        <button type="submit" class="btn btn-danger rounded-pill px-4">
+                            <i class="fas fa-trash-alt me-1"></i>
+                            Xóa đơn đặt tour
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

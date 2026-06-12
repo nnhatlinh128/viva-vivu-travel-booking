@@ -1,0 +1,65 @@
+﻿@model ToursAndTravelsManagement.ViewModels.DashboardViewModel
+
+@{
+   ViewData["Title"] = "Dashboard";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="container">
+    <div class="row">
+        <!-- Pie Chart for Booking Status -->
+        <div class="col-md-6">
+            <h4>Booking Status</h4>
+            <canvas id="bookingStatusChart"></canvas>
+        </div>
+
+        <!-- Line Chart for Revenue by Month -->
+        <div class="col-md-6">
+            <h4>Revenue by Month</h4>
+            <canvas id="revenueByMonthChart"></canvas>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Pie Chart for Booking Status
+        var bookingStatusData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.BookingStatusData));
+        var bookingStatusLabels = Object.keys(bookingStatusData);
+        var bookingStatusValues = Object.values(bookingStatusData);
+
+        var bookingStatusCtx = document.getElementById('bookingStatusChart').getContext('2d');
+        new Chart(bookingStatusCtx, {
+            type: 'pie',
+            data: {
+                labels: bookingStatusLabels,
+                datasets: [{
+                    label: 'Booking Status',
+                    data: bookingStatusValues,
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#FF9F40']
+                }]
+            }
+        });
+
+        // Line Chart for Revenue by Month
+        var revenueByMonthData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RevenueByMonth));
+        var revenueByMonthLabels = Object.keys(revenueByMonthData);
+        var revenueByMonthValues = Object.values(revenueByMonthData);
+
+        var revenueByMonthCtx = document.getElementById('revenueByMonthChart').getContext('2d');
+        new Chart(revenueByMonthCtx, {
+            type: 'line',
+            data: {
+                labels: revenueByMonthLabels,
+                datasets: [{
+                    label: 'Revenue by Month',
+                    data: revenueByMonthValues,
+                    borderColor: '#FF6384',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)'
+                }]
+            }
+        });
+    </script>
+}

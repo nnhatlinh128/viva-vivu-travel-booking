@@ -1,0 +1,199 @@
+@using ToursAndTravelsManagement.Common
+@model PaginatedList<ToursAndTravelsManagement.Models.Voucher>
+
+@{
+    ViewData["Title"] = "Quản lý Voucher";
+}
+
+<div class="container-fluid">
+
+    <!-- ===== HEADER ===== -->
+    <div class="card shadow-xl mb-4">
+        <div class="card-body bg-gradient-primary text-white rounded-4">
+            <h1 class="mb-0 fw-bold text-white header-title">
+                Quản Lý Voucher
+            </h1>
+        </div>
+    </div>
+
+    <!-- ===== ACTION BUTTON ===== -->
+    <div class="mb-4 d-flex flex-wrap gap-2">
+        <a asp-action="Create" class="btn btn-warning hover-lift">
+            <i class="fas fa-plus me-1"></i> Thêm Voucher
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    <!-- ===== TABLE ===== -->
+    <div class="card shadow-xl">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle mb-0">
+                <thead class="bg-light-purple">
+                    <tr class="text-primary text-uppercase small">
+                        <th>Mã</th>
+                        <th>Giảm</th>
+                        <th>Thời gian</th>
+                        <th>Lượt</th>
+                        <th>Trạng thái</th>
+                        <th width="160">Hành động</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var v in Model)
+                    {
+                        <tr class="table-row-hover hover-lift">
+
+                            <td class="fw-bold">@v.Code</td>
+
+                            <td class="fw-semibold text-danger">
+                                @(v.IsPercentage
+                                    ? $"{v.DiscountValue}%"
+                                    : $"{v.DiscountValue:N0}đ")
+                            </td>
+
+                            <td>
+                                @v.StartDate.ToString("dd/MM/yyyy")
+                                -
+                                @v.EndDate.ToString("dd/MM/yyyy")
+                            </td>
+
+                            <td>@v.Quantity</td>
+
+                            <td>
+                                @if (v.IsActive)
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Inactive</span>
+                                }
+                            </td>
+
+                            <td>
+                                <div class="btn-group">
+                                    <a asp-action="Edit"
+                                       asp-route-id="@v.VoucherId"
+                                       class="btn btn-sm btn-outline-primary">
+                                        Edit
+                                    </a>
+                                    <a asp-action="Delete"
+                                       asp-route-id="@v.VoucherId"
+                                       class="btn btn-sm btn-outline-danger">
+                                        Delete
+                                    </a>
+                                </div>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== PAGINATION ===== -->
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            @{
+                var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+            }
+
+            <li class="page-item @prevDisabled">
+                <a asp-action="Index"
+                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   asp-route-pageSize="@ViewBag.PageSize"
+                   class="page-link">
+                    Previous
+                </a>
+            </li>
+
+            <li class="page-item @nextDisabled">
+                <a asp-action="Index"
+                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                   asp-route-pageSize="@ViewBag.PageSize"
+                   class="page-link">
+                    Next
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+</div>
+
+<style>
+    :root {
+        --primary-purple: #2c3e88;
+        --primary-dark: #1e2a5e;
+        --warning-orange: #ff9800;
+        --light-purple: #f8f5ff;
+        --bg-light-purple: #e8e0ff;
+    }
+
+    .header-title {
+        letter-spacing: 1px;
+        text-shadow: 0 4px 12px rgba(0,0,0,0.35);
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, var(--primary-purple), var(--primary-dark)) !important;
+    }
+
+    .bg-light-purple {
+        background-color: var(--bg-light-purple) !important;
+    }
+
+    .text-primary {
+        color: var(--primary-purple) !important;
+    }
+
+    .btn-warning {
+        background-color: var(--warning-orange) !important;
+        border-color: var(--warning-orange) !important;
+        color: white !important;
+    }
+
+    .btn-warning:hover {
+        background-color: #e2972f !important;
+        transform: translateY(-3px);
+    }
+
+    .table-row-hover:hover {
+        background-color: var(--light-purple) !important;
+        transition: all 0.3s ease;
+    }
+
+    .hover-lift {
+        transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+    }
+
+    .shadow-xl {
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+    }
+
+    .page-link {
+        color: var(--primary-purple);
+    }
+
+    .page-link:hover {
+        background-color: var(--light-purple);
+        color: var(--primary-purple);
+    }
+
+    .card {
+        border-radius: 1.5rem;
+    }
+</style>

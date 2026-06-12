@@ -1,0 +1,79 @@
+@model ToursAndTravelsManagement.Models.Booking
+
+@{
+    ViewData["Title"] = "Đặt tour thành công";
+    Layout = "~/Views/Shared/_AnotherLayout.cshtml";
+}
+
+<div class="container py-5 text-center">
+    <div class="card border-0 shadow-lg rounded-4 p-5">
+
+        <div class="mb-4">
+            <i class="ri-checkbox-circle-fill text-success display-1"></i>
+        </div>
+
+        <h2 class="fw-bold mb-3">Đặt tour thành công!</h2>
+
+        <p>
+            Mã booking:
+            <strong>@Model.BookingCode</strong>
+        </p>
+
+        <p>
+            Tổng thanh toán:
+            <strong>@Model.FinalPrice.ToString("N0") đ</strong>
+        </p>
+
+        <p>
+            Phương thức thanh toán:
+            <strong>
+                @(Model.PaymentMethod switch
+                {
+                    ToursAndTravelsManagement.Enums.PaymentMethod.VNPay => "VNPay",
+                    ToursAndTravelsManagement.Enums.PaymentMethod.PayPal => "PayPal",
+                    ToursAndTravelsManagement.Enums.PaymentMethod.Cash => "Tiền mặt",
+                    _ => "Không xác định"
+                })
+            </strong>
+        </p>
+
+        <p>
+            Trạng thái thanh toán:
+
+            @if (Model.PaymentStatus == ToursAndTravelsManagement.Enums.PaymentStatus.Completed)
+            {
+                <strong class="text-success">
+                    Đã thanh toán
+                </strong>
+            }
+            else
+            {
+                <strong class="text-warning">
+                    Chờ thanh toán
+                </strong>
+            }
+        </p>
+
+        <p>
+            Ngày đặt:
+            <strong>
+                @Model.BookingDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+            </strong>
+        </p>
+
+        <p class="text-muted fs-5 mb-4">
+            Cảm ơn bạn đã đặt tour cùng chúng tôi.
+        </p>
+
+        <div class="d-flex justify-content-center gap-3">
+            <a asp-action="MyBookings"
+               class="btn btn-primary rounded-pill px-4 py-2">
+                Xem tour đã đặt
+            </a>
+
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 py-2">
+                Đặt thêm tour
+            </a>
+        </div>
+    </div>
+</div>

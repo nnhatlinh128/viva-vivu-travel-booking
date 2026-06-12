@@ -1,0 +1,26 @@
+/* Logo to hơn */
+.auth-logo{
+  height: 58px;   /* tăng size giống hình 2 */
+  width: auto;
+}
+
+/* Khối user: tên + avatar */
+.auth-user{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.auth-name{
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* Avatar header tròn */
+.auth-avatar{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #eee;
+}

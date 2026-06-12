@@ -1,0 +1,478 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+   <meta charset="utf-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <title>@ViewData["Title"] - ToursAndTravelsManagement</title>
+   <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+   <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+   <link rel="stylesheet" href="~/ToursAndTravelsManagement.styles.css" asp-append-version="true" />
+   <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.css">
+   <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+   <link rel="stylesheet" href="~/css/style.css">
+   <link rel="stylesheet" href="~/css/tours.css" />
+   <link rel="icon" type="image/jpeg" href="https://i.pinimg.com/736x/ab/97/ea/ab97eab08f5408455e1d9962c4bc15e5.jpg">
+   <style>
+       footer {
+           background: #333a73 !important;
+           color: #e2e8f0 !important;
+       }
+
+
+       footer h5 {
+           color: #fba834 !important;
+       }
+
+
+       footer a {
+           color: #e2e8f0 !important;
+           transition: all .3s;
+       }
+
+
+       footer a:hover {
+           color: #e2972f !important;
+           transform: translateY(-2px);
+       }
+
+
+       footer i.ri {
+           transition: all .3s;
+       }
+
+
+       footer a:hover i.ri {
+           transform: scale(1.15);
+       }
+
+
+       footer .text-white {
+           color: #e2e8f0 !important;
+       }
+
+
+       .ticker-bar {
+           background-color: #fba834;
+           color: white;
+           padding: 10px 0;
+           overflow: hidden;
+           white-space: nowrap;
+           font-weight: bold;
+           font-size: 0.95rem;
+           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+       }
+
+
+       .ticker-content {
+           display: inline-block;
+           padding-left: 100%;
+           animation: ticker 25s linear infinite;
+       }
+
+
+       .ticker-content span {
+           padding: 0 60px;
+       }
+
+
+       @@keyframes ticker {
+           0% {
+               transform: translateX(0);
+           }
+
+
+           100% {
+               transform: translateX(-100%);
+           }
+       }
+
+
+       .ticker-bar:hover .ticker-content {
+           animation-play-state: paused;
+       }
+
+
+       /* Active menu */
+       .navbar-nav .nav-item.active .nav-link,
+       .navbar-nav .nav-item.dropdown.active .nav-link.dropdown-toggle {
+           color: #fba834 !important;
+           font-weight: bold;
+       }
+
+
+       /* Nút cam giống hình */
+       .btn-orange {
+           background-color: #fba834;
+           color: white;
+           border-radius: 30px;
+           padding: 8px 20px;
+           font-weight: 600;
+           transition: all 0.3s;
+           white-space: nowrap;
+       }
+
+
+       .btn-orange:hover {
+           background-color: #e69500;
+           color: white;
+       }
+
+
+       /* Nút liên hệ */
+       .btn-contact {
+           background-color: #fba834;
+           color: white;
+           border-radius: 30px;
+           padding: 8px 18px;
+           font-weight: 600;
+       }
+
+
+       .btn-contact i {
+           margin-right: 6px;
+       }
+
+
+       /* Responsive mobile */
+       @@media (max-width: 991.98px) {
+           .navbar-collapse {
+               background: white;
+               padding: 20px;
+               border-radius: 10px;
+               margin-top: 10px;
+               box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+           }
+
+
+           .navbar-nav .nav-link {
+               padding: 12px 15px !important;
+               font-size: 1.1rem;
+           }
+
+
+           .btn-orange,
+           .btn-contact {
+               width: 100%;
+               margin: 8px 0;
+               text-align: center;
+           }
+
+
+           .right-actions {
+               flex-direction: column;
+               width: 100%;
+           }
+       }
+   </style>
+</head>
+
+
+<body>
+   <!-- Ticker bar -->
+   <div class="ticker-bar">
+       <div class="ticker-content">
+           <span> VIVA VIVU – CHÀO HÈ RỰC RỠ - Tour du lịch siêu ưu đãi, giảm 20% cho trải nghiệm trọn vẹn </span>
+       </div>
+   </div>
+
+
+   <!-- Header & Navbar -->
+   <header>
+       <nav class="navbar navbar-expand-lg bg-white sticky-top navbar-light border-bottom box-shadow">
+           <div class="container">
+               <!-- Logo bên trái -->
+               <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                   <img src="https://i.pinimg.com/736x/ab/97/ea/ab97eab08f5408455e1d9962c4bc15e5.jpg"
+                       alt="Viva Vivu Logo" style="height: 60px;">
+               </a>
+
+
+               <!-- Toggle button -->
+               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                   aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                   <span class="navbar-toggler-icon"></span>
+               </button>
+
+
+               <!-- Menu chính -->
+               <div class="collapse navbar-collapse" id="navbarNav">
+                   <!-- Các menu căn giữa -->
+                   <ul class="navbar-nav mx-auto">
+                       <!-- Luôn hiển thị Home -->
+                       <li class="nav-item">
+                           <a class="nav-link" asp-controller="Home" asp-action="Index">Trang chủ</a>
+                       </li>
+                       @if (User.Identity.IsAuthenticated)
+                       {
+                           @if (User.IsInRole("Admin"))
+                           {
+                               <li class="nav-item">
+                                   <a class="nav-link" asp-controller="Tours" asp-action="Index">Quản Lý Tour</a>
+                               </li>
+                               <li class="nav-item">
+                                   <a class="nav-link" asp-controller="Destinations" asp-action="Index">Quản Lý Điểm Đến</a>
+                               </li>
+                               <li class="nav-item">
+                                   <a class="nav-link" asp-controller="Bookings" asp-action="Index">Quản Lý Đặt Tour</a>
+                               </li>
+                               <li class="nav-item">
+                                   <a class="nav-link" asp-controller="Vouchers" asp-action="Index">Quản Lý Voucher</a>
+                               </li>
+                               <li class="nav-item">
+                                   <a class="nav-link" asp-controller="Admin" asp-action="Users"> <i class="fas fa-users me-1"></i>
+                                       Quản lý Người Dùng
+                                   </a>
+                               </li>
+                               <li class="nav-item">
+                                   <a class="nav-link" asp-controller="Admin" asp-action="Profile">Tài Khoản</a>
+                               </li>
+                           }
+                           else if (User.IsInRole("User"))
+                           {
+                               <li class="nav-item">
+                                   <a class="nav-link" asp-controller="Tours" asp-action="Domestic">Tour nội địa</a>
+                               </li>
+                               <li class="nav-item">
+                                   <a class="nav-link" asp-controller="Tours" asp-action="International">Tour quốc tế</a>
+                               </li>
+                               <li class="nav-item">
+                                   <a class="nav-link" asp-controller="About" asp-action="Index">Về chúng tôi</a>
+                               </li>
+                               <li class="nav-item">
+                                   <a class="nav-link" asp-controller="UserBookings" asp-action="MyBookings">Tài khoản</a>
+                               </li>
+                           }
+                           else
+                           {
+                               <li class="nav-item">
+                                   <a class="nav-link" asp-controller="Tours" asp-action="Domestic">Tour nội địa</a>
+                               </li>
+                               <li class="nav-item">
+                                   <a class="nav-link" asp-controller="Tours" asp-action="International">Tour quốc tế</a>
+                               </li>
+                               <li class="nav-item">
+                                   <a class="nav-link" asp-controller="About" asp-action="Index">Về chúng tôi</a>
+                               </li>
+                           }
+                       }
+                       else
+                       {
+                           <li class="nav-item">
+                               <a class="nav-link" asp-controller="Tours" asp-action="Domestic">Tour nội địa</a>
+                           </li>
+                           <li class="nav-item">
+                               <a class="nav-link" asp-controller="Tours" asp-action="International">Tour quốc tế</a>
+                           </li>
+                           <li class="nav-item">
+                               <a class="nav-link" asp-controller="About" asp-action="Index">Về chúng tôi</a>
+                           </li>
+                       }
+                   </ul>
+
+
+                   <!-- Phần bên phải: Liên hệ + Login/Register/Logout -->
+                   <div class="d-flex align-items-center gap-3 right-actions">
+                       @if (User.Identity.IsAuthenticated)
+                       {
+                           @if (User.IsInRole("Admin"))
+                           {
+                               <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                   <button type="submit" class="btn btn-orange">Đăng xuất</button>
+                               </form>
+                           }
+                           @if (User.IsInRole("User"))
+                           {
+                               <a href="tel:0866849040" class="btn btn-contact d-none d-lg-flex align-items-center">
+                                   <i class="ri-phone-fill"></i> Liên hệ Viva Vivu
+                               </a>
+                               <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                   <button type="submit" class="btn btn-orange">Đăng xuất</button>
+                               </form>
+                           }
+                       }
+                       else
+                       {
+                           <a href="tel:0866849040" class="btn btn-contact d-none d-lg-flex align-items-center">
+                               <i class="ri-phone-fill"></i> Liên hệ Viva Vivu
+                           </a>
+                           <a class="btn btn-orange text-dark" asp-controller="Account" asp-action="Login">Đăng nhập</a>
+                           <a class="btn btn-orange text-dark" asp-controller="Account" asp-action="Register">Đăng ký</a>
+                       }
+                   </div>
+               </div>
+           </div>
+       </nav>
+   </header>
+
+
+   <!-- Nội dung chính -->
+   <div>
+       <main role="main">
+           @RenderBody()
+       </main>
+   </div>
+
+
+   <!-- ==================== FOOTER ==================== -->
+   <footer class="text-white py-5" style="background: #333a73 !important;">
+       <div class="container py-4">
+           <div class="row g-5 align-items-start">
+
+
+               <!-- Cột 1: Logo + mô tả ngắn + mạng xã hội -->
+               <div class="col-lg-4 col-md-6 text-center text-lg-start">
+                   <img src="https://i.pinimg.com/736x/6e/cf/58/6ecf589e3b9b2c86bfedb915ab85b47a.jpg"
+                       alt="Viva Vivu Logo" class="mb-3" style="height: 100px;">
+
+
+                   <p class="mb-0 small opacity-90" style="line-height: 1.7;">
+                       Nền tảng đặt tour du lịch trực tuyến hàng đầu Việt Nam.<br>
+                       Trải nghiệm hành trình tuyệt vời cùng Viva Vivu.
+                   </p>
+
+
+                   <div class="d-flex gap-4 justify-content-center justify-content-lg-start mt-4">
+                       <a href="https://facebook.com/vivavivu" target="_blank"
+                           class="text-white fs-3 opacity-80 hover-opacity-100">
+                           <img src="https://play-lh.googleusercontent.com/KCMTYuiTrKom4Vyf0G4foetVOwhKWzNbHWumV73IXexAIy5TTgZipL52WTt8ICL-oIo"
+                               alt="Facebook" style="width: 40px; height: 40px; border-radius: 50%;">
+                       </a>
+                       <a href="https://zalo.me/0866849040" target="_blank"
+                           class="text-white fs-3 opacity-80 hover-opacity-100">
+                           <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/a1/a6/5f/a1a65fcc-2623-16f9-b2e5-1f248a2f9ed9/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/230x0w.webp"
+                               alt="Zalo" style="width: 40px; height: 40px; border-radius: 50%;">
+                       </a>
+                   </div>
+               </div>
+
+
+               <!-- Cột 2: Thông tin liên hệ -->
+               <div class="col-lg-3 col-md-6">
+                   <h5 class="fw-bold mb-4 text-warning">Liên hệ</h5>
+                   <ul class="list-unstyled small">
+                       <li class="mb-3 d-flex align-items-center">
+                           <i class="ri-map-pin-line text-warning me-3"></i>
+                           279 Nguyễn Tri Phương, Phường Diên Hồng, TP.HCM
+                       </li>
+                       <li class="mb-3">
+                           <i class="ri-mail-line text-warning me-3"></i>
+                           support@vivavivu.com
+                       </li>
+                       <li class="mb-3">
+                           <i class="ri-phone-line text-warning me-3"></i>
+                           086 684 9040
+                       </li>
+                   </ul>
+               </div>
+
+
+               <!-- Cột 3: Hỗ trợ khách hàng -->
+               <div class="col-lg-3 col-md-6">
+                   <h5 class="fw-bold mb-4 text-warning">Hỗ trợ khách hàng</h5>
+                   <ul class="list-unstyled small">
+                       <li class="mb-3 d-flex align-items-center"><i class="ri-checkbox-circle-line me-2"></i>Câu hỏi
+                           thường gặp</li>
+                       <li class="mb-3 d-flex align-items-center"><i class="ri-checkbox-circle-line me-2"></i>Chính
+                           sách bảo mật</li>
+                       <li class="mb-3 d-flex align-items-center"><i class="ri-checkbox-circle-line me-2"></i>Điều
+                           khoản sử dụng</li>
+                       <li class="mb-3 d-flex align-items-center"><i class="ri-checkbox-circle-line me-2"></i>Hướng dẫn
+                           thanh toán</li>
+                   </ul>
+               </div>
+
+
+               <!-- Cột 4: Giờ làm việc -->
+               <div class="col-lg-2 col-md-6">
+                   <h5 class="fw-bold mb-4 text-warning">Giờ làm việc</h5>
+
+
+                   <div class="text-light" style="font-size: 0.95rem;">
+                       <div class="d-flex justify-content-between mb-3">
+                           <span>T2 – T6</span>
+                           <span class="fw-bold">08:00-18:00</span>
+                       </div>
+                       <div class="d-flex justify-content-between mb-3">
+                           <span>T7</span>
+                           <span class="fw-bold">08:00-12:00</span>
+                       </div>
+                       <div class="d-flex justify-content-between text-warning fw-bold">
+                           <span>Chủ nhật</span>
+                           <span>Nghỉ</span>
+                       </div>
+                   </div>
+               </div>
+           </div>
+
+
+           <!-- ==================== COPYRIGHT ==================== -->
+           <hr class="my-5 border-secondary opacity-20">
+           <div class="text-center">
+               <p class="fs-5 fw-semibold mb-0 opacity-80">
+                   © 2025 VivaVivu Travel. All rights reserved.
+               </p>
+           </div>
+       </div>
+   </footer>
+
+
+   <!-- Back to top button -->
+   <button type="button" class="btn btn-warning btn-lg rounded-circle shadow-lg back-to-top d-none"
+       style="position: fixed; bottom: 30px; right: 30px; z-index: 99; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+       <i class="ri-arrow-up-line fs-3"></i>
+   </button>
+
+
+   <!-- Scripts -->
+   <script src="~/lib/jquery/dist/jquery.min.js"></script>
+   <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+   <script src="~/js/site.js" asp-append-version="true"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+   <script src="~/js/main.js"></script>
+
+
+   <script>
+       // Highlight active menu
+       document.addEventListener("DOMContentLoaded", function () {
+           var currentUrl = window.location.pathname;
+           var navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+           navLinks.forEach(function (link) {
+               var href = link.getAttribute('href');
+               if (href && (href === currentUrl || currentUrl.startsWith(href + '/'))) {
+                   var navItem = link.closest('.nav-item');
+                   if (navItem) navItem.classList.add('active');
+                   if (link.closest('.dropdown-menu')) {
+                       var dropdown = link.closest('.nav-item.dropdown');
+                       if (dropdown) dropdown.classList.add('active');
+                   }
+               }
+           });
+       });
+
+
+       // Back to top
+       window.addEventListener('scroll', function () {
+           const backToTop = document.querySelector('.back-to-top');
+           if (window.pageYOffset > 300) {
+               backToTop.classList.remove('d-none');
+           } else {
+               backToTop.classList.add('d-none');
+           }
+       });
+       document.querySelector('.back-to-top').addEventListener('click', function (e) {
+           e.preventDefault();
+           window.scrollTo({ top: 0, behavior: 'smooth' });
+       });
+   </script>
+
+
+   @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+
+</html>
+

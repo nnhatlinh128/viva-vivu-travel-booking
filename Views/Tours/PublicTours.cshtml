@@ -1,0 +1,503 @@
+@model IEnumerable<ToursAndTravelsManagement.Models.Tour>
+
+
+@{
+    ViewData["Title"] = "Danh sách Tour";
+    ViewData["IsFullWidth"] = true;
+}
+
+
+<!-- ==================== TIÊU ĐỀ TRANG ==================== -->
+<h1 class="text-center display-4 fw-bold text-white py-4 mb-5"
+    style="background-color: #333a73;">
+    Danh sách Tour
+</h1>
+
+
+<!-- ==================== NỘI DUNG CHÍNH ==================== -->
+<div class="container-fluid py-5 bg-light">
+    <div class="container">
+        <div class="row">
+
+
+            <!-- ==================== BỘ LỌC BÊN TRÁI ==================== -->
+            <div class="col-lg-3 mb-4">
+                <div class="card shadow-sm border-0 sticky-top" style="top: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold mb-4">Bộ lọc tìm kiếm</h5>
+
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Ngân sách</label>
+                            <select id="filterPrice" class="form-select">
+                                <option value="all">Tất cả</option>
+                                <option value="under10">Dưới 10 triệu</option>
+                                <option value="10to20">10 - 20 triệu</option>
+                                <option value="20to50">20 - 50 triệu</option>
+                                <option value="over50">Trên 50 triệu</option>
+                            </select>
+                        </div>
+
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Điểm đến</label>
+                            <select id="filterDestination" class="form-select">
+                                <option value="all">Tất cả</option>
+                                @{
+                                    var destinations = Model
+                                        .Select(t => t.Destination?.Name)
+                                        .Where(name => !string.IsNullOrEmpty(name))
+                                        .Distinct()
+                                        .OrderBy(name => name);
+
+
+                                    foreach (var dest in destinations)
+                                    {
+                                        <option value="@dest">@dest</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Thời gian</label>
+                            <select id="filterDuration" class="form-select">
+                                <option value="all">Tất cả</option>
+                                <option value="short">Dưới 7 ngày</option>
+                                <option value="medium">7 - 14 ngày</option>
+                                <option value="long">Trên 14 ngày</option>
+                            </select>
+                        </div>
+
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Số lượng khách</label>
+                            <select id="filterParticipants" class="form-select">
+                                <option value="all">Tất cả</option>
+                                <option value="1-10">1 - 10 khách</option>
+                                <option value="11-20">11 - 20 khách</option>
+                                <option value="21-30">21 - 30 khách</option>
+                                <option value="over30">Trên 30 khách</option>
+                            </select>
+                        </div>
+
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Ngày khởi hành</label>
+                            <select id="filterStartDate" class="form-select">
+                                <option value="all">Tất cả</option>
+                                <option value="thisMonth">Tháng này</option>
+                                <option value="nextMonth">Tháng sau</option>
+                                <option value="next3Months">3 tháng tới</option>
+                                <option value="next6Months">6 tháng tới</option>
+                            </select>
+                        </div>
+
+
+                        <div class="d-grid">
+                            <button type="button" id="resetFilter"
+                                    class="btn btn-outline-secondary rounded-pill">
+                                Xóa bộ lọc
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- ==================== DANH SÁCH TOUR BÊN PHẢI ==================== -->
+            <div class="col-lg-9">
+
+
+                <!-- THANH TÌM KIẾM + SẮP XẾP -->
+                <div class="mb-5 d-flex align-items-center justify-content-between">
+                    <div class="flex-grow-1 me-3">
+                        <div class="input-group input-group-lg shadow-sm">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text"
+                                   id="searchInput"
+                                   class="form-control border-start-0"
+                                   placeholder="Tìm tour theo tên, điểm đến, mã tour..."
+                                   autocomplete="off">
+                        </div>
+                    </div>
+
+
+                    <div class="flex-shrink-0">
+                        <select id="sortPrice" class="form-select form-select-lg">
+                            <option value="low">Giá tăng dần</option>
+                            <option value="high">Giá giảm dần</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <h3 class="fw-bold mb-5 text-primary">
+                    Tất cả Tour nổi bật
+                </h3>
+
+
+                <div id="noResults" class="text-center py-5 d-none">
+                    <h4 class="text-muted">
+                        Không tìm thấy tour nào phù hợp
+                    </h4>
+                    <p class="text-muted">
+                        Hãy thử thay đổi bộ lọc hoặc từ khóa tìm kiếm
+                    </p>
+                </div>
+
+
+                @if (!Model.Any())
+                {
+                    <div class="text-center py-5">
+                        <h4 class="text-muted">
+                            Hiện chưa có tour nào
+                        </h4>
+                    </div>
+                }
+                else
+                {
+                    var index = 0;
+                    foreach (var tour in Model)
+                    {
+                        var totalDays = (tour.EndDate - tour.StartDate).Days + 1;
+                        var totalNights = totalDays - 1;
+                        var originalPrice = tour.Price * 1.25m;
+                        var destinationName = tour.Destination?.Name ?? "";
+                        var discountPercent = 20;
+
+
+                        <div class="row g-5 mb-5 align-items-center border-bottom pb-5 tour-item"
+                             data-aos="fade-up"
+                             data-aos-delay="@(index * 150)"
+                             data-price="@tour.Price"
+                             data-destination="@destinationName"
+                             data-duration="@totalDays"
+                             data-participants="@tour.MaxParticipants"
+                             data-name="@tour.Name.ToLower()"
+                             data-startdate="@tour.StartDate:yyyy-MM-dd">
+
+
+                            <!-- ẢNH TOUR + BADGE GIẢM GIÁ -->
+                            <div class="col-md-5 position-relative">
+                                <div class="position-absolute top-0 start-0 m-3 z-3">
+                                    <span class="badge bg-danger fs-6 px-3 py-2 rounded-pill shadow">
+                                        -@discountPercent%
+                                    </span>
+                                </div>
+
+
+                                <img src="@(tour.Destination?.ImageUrl ?? "/images/default-tour.jpg")"
+                                     class="img-fluid rounded-4 shadow-lg tour-zoomable cursor-pointer"
+                                     style="height: 420px; object-fit: cover; width: 100%;"
+                                     alt="@tour.Name"
+                                     data-bs-toggle="modal"
+                                     data-bs-target="#imageZoomModal"
+                                     onclick="setZoomImage(this.src, this.alt)" />
+                            </div>
+
+
+                            <!-- NỘI DUNG TOUR -->
+                            <div class="col-md-7">
+                                <h2 class="h3 fw-bold mb-4">
+                                    @tour.Name
+                                </h2>
+
+
+                                <div class="row g-4 mb-4 text-muted">
+                                    <div class="col-sm-6">
+                                        <i class="fas fa-map-marker-alt me-2"></i>
+                                        <strong>Điểm đến:</strong> @tour.Destination?.Name
+                                    </div>
+
+
+                                    <div class="col-sm-6">
+                                        <i class="fas fa-clock me-2"></i>
+                                        <strong>Thời gian:</strong> @totalDays Ngày @totalNights Đêm
+                                    </div>
+
+
+                                    <div class="col-sm-6">
+                                        <i class="fas fa-calendar-alt me-2"></i>
+                                        <strong>Khởi hành:</strong> @tour.StartDate.ToString("dd/MM/yyyy")
+                                    </div>
+
+
+                                    <div class="col-sm-6">
+                                        <i class="fas fa-users me-2"></i>
+                                        <strong>Số lượng:</strong> Tối đa @tour.MaxParticipants khách
+                                    </div>
+                                </div>
+
+
+                                <!-- GIÁ + CTA -->
+                                <div class="d-flex align-items-end justify-content-between">
+                                    <div>
+                                        <div class="text-muted text-decoration-line-through fs-6">
+                                            @originalPrice.ToString("N0")đ
+                                        </div>
+                                        <div class="fw-bold text-danger fs-1 mb-0">
+                                            @tour.Price.ToString("N0")đ
+                                        </div>
+                                    </div>
+
+
+                                    <a asp-action="Details"
+                                       asp-route-id="@tour.TourId"
+                                       class="btn btn-outline-primary btn-sm rounded-pill px-4 py-2">
+                                        Xem chi tiết
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        index++;
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ==================== MODAL ZOOM ẢNH ==================== -->
+<div class="modal fade" id="imageZoomModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-transparent border-0">
+            <div class="modal-header border-0 position-absolute top-0 end-0 z-index-10 p-3">
+                <button type="button"
+                        class="btn-close btn-close-white shadow"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body p-0 d-flex align-items-center justify-content-center">
+                <img id="zoomedImage"
+                     class="img-fluid"
+                     style="max-height: 100vh; max-width: 100%; object-fit: contain;"
+                     alt="Zoomed tour image">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .btn-outline-primary {
+        background-color: #fba834;
+        color: #ffffff;
+        border: none;
+        border-radius: 999px;
+        padding: 0.6rem 1.6rem;
+        font-weight: 600;
+        transition:
+            background-color 0.3s ease,
+            transform 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+
+    .btn-outline-primary:hover {
+        background-color: #e6961e;
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(251, 168, 52, 0.45);
+    }
+
+
+    .btn-outline-primary:active {
+        transform: translateY(0);
+        box-shadow: 0 3px 10px rgba(251, 168, 52, 0.35);
+    }
+
+
+    @@media (max-width: 991.98px) {
+        img.img-fluid {
+            height: 300px !important;
+        }
+    }
+
+
+    @@media (max-width: 767.98px) {
+        img.img-fluid {
+            height: 240px !important;
+        }
+
+
+        h1.display-4 {
+            font-size: 1.8rem;
+        }
+    }
+
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+
+
+    .tour-zoomable {
+        transition: transform 0.3s ease;
+    }
+
+
+    .tour-zoomable:hover {
+        transform: scale(1.05);
+    }
+
+
+    .z-index-10 {
+        z-index: 10;
+    }
+</style>
+
+
+<script>
+    function setZoomImage(src, alt) {
+        const zoomedImg = document.getElementById('zoomedImage');
+        zoomedImg.src = src;
+        zoomedImg.alt = alt;
+    }
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterPrice = document.getElementById('filterPrice');
+        const filterDestination = document.getElementById('filterDestination');
+        const filterDuration = document.getElementById('filterDuration');
+        const filterParticipants = document.getElementById('filterParticipants');
+        const filterStartDate = document.getElementById('filterStartDate');
+        const searchInput = document.getElementById('searchInput');
+        const sortPrice = document.getElementById('sortPrice');
+        const resetBtn = document.getElementById('resetFilter');
+        const tourItems = document.querySelectorAll('.tour-item');
+        const noResultsMsg = document.getElementById('noResults');
+
+
+        // Các mốc thời gian cho lọc ngày khởi hành
+        const today = new Date();
+        const thisMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        const nextMonth = new Date(today.getFullYear(), today.getMonth() + 2, 0);
+        const next3Months = new Date(today.getFullYear(), today.getMonth() + 4, 0);
+        const next6Months = new Date(today.getFullYear(), today.getMonth() + 7, 0);
+
+
+        function applyFiltersAndSort() {
+            const priceVal = filterPrice.value;
+            const destVal = filterDestination.value;
+            const durationVal = filterDuration.value;
+            const participantsVal = filterParticipants.value;
+            const startDateVal = filterStartDate.value;
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const sortVal = sortPrice.value;
+
+
+            const filteredItems = Array.from(tourItems).filter(item => {
+                const price = parseFloat(item.dataset.price);
+                const destination = item.dataset.destination.toLowerCase();
+                const duration = parseInt(item.dataset.duration);
+                const participants = parseInt(item.dataset.participants);
+                const name = item.dataset.name;
+                const startDateStr = item.dataset.startdate;
+                const startDate = new Date(startDateStr);
+
+
+                const matchesSearch = !searchTerm ||
+                    name.includes(searchTerm) ||
+                    destination.includes(searchTerm);
+
+
+                let show = matchesSearch;
+
+
+                // Lọc giá
+                if (show && priceVal !== 'all') {
+                    if (priceVal === 'under10' && price >= 10000000) show = false;
+                    else if (priceVal === '10to20' && (price < 10000000 || price > 20000000)) show = false;
+                    else if (priceVal === '20to50' && (price < 20000000 || price > 50000000)) show = false;
+                    else if (priceVal === 'over50' && price <= 50000000) show = false;
+                }
+
+
+                // Lọc điểm đến
+                if (show && destVal !== 'all' && destination !== destVal.toLowerCase()) {
+                    show = false;
+                }
+
+
+                // Lọc thời gian tour
+                if (show && durationVal !== 'all') {
+                    if (durationVal === 'short' && duration >= 7) show = false;
+                    else if (durationVal === 'medium' && (duration < 7 || duration > 14)) show = false;
+                    else if (durationVal === 'long' && duration <= 14) show = false;
+                }
+
+
+                // Lọc số lượng khách
+                if (show && participantsVal !== 'all') {
+                    if (participantsVal === '1-10' && (participants < 1 || participants > 10)) show = false;
+                    else if (participantsVal === '11-20' && (participants < 11 || participants > 20)) show = false;
+                    else if (participantsVal === '21-30' && (participants < 21 || participants > 30)) show = false;
+                    else if (participantsVal === 'over30' && participants <= 30) show = false;
+                }
+
+
+                // Lọc ngày khởi hành
+                if (show && startDateVal !== 'all') {
+                    if (startDateVal === 'thisMonth' && startDate > thisMonth) show = false;
+                    else if (startDateVal === 'nextMonth' && (startDate <= thisMonth || startDate > nextMonth)) show = false;
+                    else if (startDateVal === 'next3Months' && startDate > next3Months) show = false;
+                    else if (startDateVal === 'next6Months' && startDate > next6Months) show = false;
+                }
+
+
+                return show;
+            });
+
+
+            // Sắp xếp theo giá
+            filteredItems.sort((a, b) => {
+                const priceA = parseFloat(a.dataset.price);
+                const priceB = parseFloat(b.dataset.price);
+                return sortVal === 'low' ? priceA - priceB : priceB - priceA;
+            });
+
+
+            // Hiển thị lại
+            const container = tourItems[0].parentNode;
+            filteredItems.forEach(item => container.appendChild(item));
+            tourItems.forEach(item => item.style.display = filteredItems.includes(item) ? '' : 'none');
+
+
+            noResultsMsg.classList.toggle('d-none', filteredItems.length > 0);
+        }
+
+
+        // Events
+        filterPrice.addEventListener('change', applyFiltersAndSort);
+        filterDestination.addEventListener('change', applyFiltersAndSort);
+        filterDuration.addEventListener('change', applyFiltersAndSort);
+        filterParticipants.addEventListener('change', applyFiltersAndSort);
+        filterStartDate.addEventListener('change', applyFiltersAndSort);
+        searchInput.addEventListener('input', applyFiltersAndSort);
+        sortPrice.addEventListener('change', applyFiltersAndSort);
+
+
+        resetBtn.addEventListener('click', () => {
+            filterPrice.value = 'all';
+            filterDestination.value = 'all';
+            filterDuration.value = 'all';
+            filterParticipants.value = 'all';
+            filterStartDate.value = 'all';
+            sortPrice.value = 'low';
+            searchInput.value = '';
+            applyFiltersAndSort();
+        });
+
+
+        applyFiltersAndSort();
+    });
+</script>
+

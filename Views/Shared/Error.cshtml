@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Error";
+}
+
+<div style="margin-top: 3rem;text-align: center; padding: 2rem; background-color: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); position: relative; z-index: 1;">
+    <div style="font-size: 5rem; margin-bottom: 1rem; animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;">🔒</div>
+    <h1 style="font-size: 3rem; color: #333; margin-bottom: 1rem;">Unauthorized Access</h1>
+    <p style="font-size: 1.2rem; color: #666; margin-bottom: 2rem;">Oops! It seems you don't have permission to access this page.</p>
+    <a href="/" style="display: inline-block; padding: 0.8rem 1.5rem; background-color: #3498db; color: white; text-decoration: none; border-radius: 5px; font-weight: 600; transition: background-color 0.3s ease;">Go Back Home</a>
+</div>
+<div style="position: absolute; border-radius: 50%; background-color: rgba(52, 152, 219, 0.1); width: 100px; height: 100px; top: -50px; left: -50px; animation: float 6s ease-in-out infinite;"></div>
+<div style="position: absolute; border-radius: 50%; background-color: rgba(52, 152, 219, 0.1); width: 150px; height: 150px; bottom: -75px; right: -75px; animation: float 6s ease-in-out infinite; animation-delay: -3s;"></div>
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <p>@ViewData["ErrorMessage"]</p>
+}

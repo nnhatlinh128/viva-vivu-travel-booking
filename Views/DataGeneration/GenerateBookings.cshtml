@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Generate Bookings";
+}
+
+<h2>Generate Bookings</h2>
+
+<form asp-action="GenerateBookings" method="post">
+    <div class="mb-3">
+        <label for="numberOfBookings" class="form-label">Number of Bookings</label>
+        <input type="number" class="form-control" id="numberOfBookings" name="numberOfBookings" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Generate</button>
+</form>

@@ -1,0 +1,691 @@
+﻿@using System.Security.Claims
+@using ToursAndTravelsManagement.Enums
+@model ToursAndTravelsManagement.Models.Booking
+@{
+    ViewData["Title"] = "Đặt tour";
+    Layout = "~/Views/Shared/_AnotherLayout.cshtml";
+    var tour = ViewBag.Tour as Tour;
+}
+
+@{
+    var tier = ViewBag.MembershipTier as MembershipTier;
+    var tierDiscountPercent = tier?.DiscountPercent ?? 0;
+    var tierName = tier?.Name ?? "Bronze";
+}
+
+
+<div id="bookingRoot"
+     data-price="@tour.Price.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)"
+     data-tier-discount="@tierDiscountPercent">
+</div>
+
+
+<div class="container py-5">
+
+
+    <form asp-action="BookTour" method="post">
+        @Html.AntiForgeryToken()
+
+
+        <!-- Hidden fields -->
+        <input type="hidden" asp-for="TourId" value="@tour.TourId" />
+
+        <!-- Số lượng hành khách sẽ được cập nhật realtime bằng JS -->
+        <input type="hidden" asp-for="NumberOfParticipants" id="hiddenParticipantCount" value="0" />
+
+        <div class="row g-5">
+
+
+            <!-- LEFT: CÁC BƯỚC ĐẶT TOUR -->
+            <div class="col-lg-7">
+
+
+                <!-- BƯỚC 1: THÔNG TIN HÀNH KHÁCH + GHI CHÚ -->
+                <div id="step1">
+
+
+                    <!-- CARD CHÍNH -->
+                    <div class="card border-0 shadow-lg rounded-4 position-relative mb-4" style="border-left: 5px solid #2c3e88 !important;">
+                        <div class="card-body p-4">
+
+
+                            <!-- HEADER -->
+                            <div class="d-flex justify-content-between align-items-start mb-4">
+                                <h2 class="fw-bold mb-0" style="color:#2c3e88">
+                                    Danh sách hành khách
+                                </h2>
+                                <button type="button" id="addPassengerBtn" class="btn btn-warning rounded-pill px-4 shadow-sm">
+                                    <i class="bi bi-plus-lg me-2"></i>Thêm hành khách
+                                </button>
+                            </div>
+
+
+                            <!-- Thông tin người đặt tour -->
+                            <div class="mb-5 p-4 bg-light rounded-3">
+                                <h6 class="fw-bold mb-3">Thông tin người đặt tour</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Họ và tên <span class="text-danger">*</span></label>
+                                        <input type="text" name="CustomerFullName" class="form-control rounded-pill" placeholder="Nguyễn Văn A" required />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Số điện thoại <span class="text-danger">*</span></label>
+                                        <input type="tel" name="CustomerPhone" class="form-control rounded-pill" placeholder="0901234567" required />
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+                                        <input type="email" name="CustomerEmail" class="form-control rounded-pill" placeholder="example@gmail.com" required />
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- Danh sách hành khách động -->
+                            <div id="passengersList" class="mb-5">
+                                <!-- JS sẽ thêm hành khách vào đây -->
+                            </div>
+
+
+                        </div>
+                    </div>
+
+
+                    <!-- KHUNG GHI CHÚ RIÊNG -->
+                    <div class="card border-0 shadow-lg rounded-4 position-relative mb-4" style="border-left: 5px solid #2c3e88 !important;">
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold mb-3" style="color:#2c3e88">Ghi chú thêm (tùy chọn)</h5>
+                            <p class="text-muted small mb-3">
+                                Bạn có yêu cầu đặc biệt? Hãy cho chúng tôi biết (ăn chay, dị ứng, phòng riêng, trẻ nhỏ...)
+                            </p>
+                            <textarea name="Note" class="form-control rounded-3" rows="4" placeholder="Nhập yêu cầu của bạn tại đây..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- === PHẦN VOUCHER + BẢO HIỂM === -->
+                    <div class="card border-0 shadow-lg rounded-4 position-relative mb-4"
+                        style="border-left: 5px solid #2c3e88 !important;">
+                        <div class="card-body p-4">
+
+                            <h5 class="fw-bold mb-4" style="color:#2c3e88">
+                                Áp dụng mã giảm giá
+                            </h5>
+
+                            <!-- Voucher -->
+                            <div class="mb-4">
+
+                                <!-- Nhập mã -->
+                                <div class="row g-3 align-items-end">
+                                    <div class="col-12 col-md-8">
+                                        <label class="form-label fw-semibold">Mã voucher</label>
+                                        <input type="text"
+                                            id="voucherCode"
+                                            class="form-control rounded-pill"
+                                            placeholder="Nhập mã voucher" />
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <button type="button"
+                                                class="btn btn-outline-warning w-100 rounded-pill"
+                                                onclick="applyVoucher()">
+                                            Áp dụng
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Thông báo -->
+                                <small id="voucherMessage" class="text-danger mt-2 d-block"></small>
+
+                                <!-- Hidden để gửi BE -->
+                                <input type="hidden" id="voucherId" name="VoucherId" />
+                                <input type="hidden" id="discountAmount" name="DiscountAmount" />
+                            </div>
+
+                            <hr class="my-4">
+
+                            <!-- Bảo hiểm -->
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="travelInsurance">
+                                <label class="form-check-label fw-semibold" for="travelInsurance">
+                                    Thêm bảo hiểm chuyến đi (100.000đ)
+                                </label>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- NÚT TIẾP TỤC THANH TOÁN -->
+                    <button type="button" id="continueToPayment" class="btn btn-warning btn-lg w-100 rounded-pill shadow book-btn py-3 fw-bold">
+                        Tiếp tục thanh toán →
+                    </button>
+                </div>
+
+
+                <!-- BƯỚC 2: CHỌN PHƯƠNG THỨC THANH TOÁN -->
+                <div id="step2" style="display: none;">
+                    <div class="card border-0 shadow-lg rounded-4 position-relative">
+                        <div class="card-body p-4">
+
+
+                            <div class="d-flex align-items-center mb-4">
+                                <button type="button" id="backToStep1" class="btn btn-outline-secondary rounded-pill me-3">
+                                    <i class="bi bi-arrow-left"></i> Quay lại
+                                </button>
+                                <h4 class="fw-bold mb-0" style="color:#2c3e88">Chọn phương thức thanh toán</h4>
+                            </div>
+
+
+                            <div class="row g-4">
+                                <!-- VNPay -->
+                                <div class="col-12">
+                                    <label class="payment-option card border rounded-4 p-4 shadow-sm h-100 position-relative cursor-pointer">
+                                        <input type="radio"
+                                            asp-for="PaymentMethod"
+                                            value="VNPay"
+                                            class="position-absolute opacity-0"
+                                            required />
+
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-4">
+                                                <i class="bi bi-qr-code-scan fs-2 text-primary"></i>
+                                            </div>
+
+                                            <div class="flex-grow-1">
+                                                <h6 class="fw-bold mb-1">
+                                                    Thanh toán qua VNPay
+                                                </h6>
+
+                                                <small class="text-muted">
+                                                    Hỗ trợ ATM, QR Code, Visa, Mastercard, Internet Banking...
+                                                </small>
+                                            </div>
+
+                                            <div class="checkmark border rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-check text-white"></i>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+
+
+                                <!-- Paypal -->
+                                <div class="col-12">
+                                    <label class="payment-option card border rounded-4 p-4 shadow-sm h-100 position-relative cursor-pointer opacity-75">
+
+                                        <input type="radio"
+                                            asp-for="PaymentMethod"
+                                            value="PayPal"
+                                            class="position-absolute opacity-0"
+                                            disabled />
+
+                                        <div class="d-flex align-items-center">
+
+                                            <div class="me-4">
+                                                <i class="bi bi-paypal fs-2 text-info"></i>
+                                            </div>
+
+                                            <div class="flex-grow-1">
+
+                                                <h6 class="fw-bold mb-1">
+                                                    Thanh toán qua PayPal
+                                                </h6>
+
+                                                <small class="text-muted d-block">
+                                                    Thanh toán quốc tế bằng Visa, Mastercard...
+                                                </small>
+
+                                                <small class="text-warning fw-semibold">
+                                                    Sắp ra mắt
+                                                </small>
+
+                                            </div>
+
+                                            <div class="checkmark border rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-check text-white"></i>
+                                            </div>
+
+                                        </div>
+                                    </label>
+                                </div>
+
+
+                                <!-- Thanh toán tiền mặt -->
+                                <div class="col-12">
+                                    <label class="payment-option card border rounded-4 p-4 shadow-sm h-100 position-relative cursor-pointer">
+                                        <input type="radio"
+                                            asp-for="PaymentMethod"
+                                            value="Cash"
+                                            class="position-absolute opacity-0"
+                                            required />
+
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-4">
+                                                <i class="bi bi-cash-stack fs-2 text-success"></i>
+                                            </div>
+
+                                            <div class="flex-grow-1">
+                                                <h6 class="fw-bold mb-1">
+                                                    Thanh toán tiền mặt
+                                                </h6>
+
+                                                <small class="text-muted">
+                                                    Thanh toán tại văn phòng hoặc khi nhận vé
+                                                </small>
+                                            </div>
+
+                                            <div class="checkmark border rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-check text-white"></i>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- NÚT ĐẶT NGAY -->
+                            <button id="submitBookingBtn"
+                                    type="submit"
+                                    class="btn btn-primary btn-lg w-100 rounded-pill mt-4">
+                                Đặt ngay
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            <!-- RIGHT: TOUR INFO + TỔNG TIỀN REALTIME -->
+            <div class="col-lg-5">
+                <div class="card border-0 shadow-lg rounded-4 sticky-top" style="top: 20px;">
+                    <div class="card-body p-4">
+
+
+                        <h4 class="fw-bold mb-3">@tour.Name</h4>
+
+
+                        <p class="mb-2">
+                            <strong>Điểm đến:</strong>
+                            @(tour.Destination?.Name ?? "Chưa xác định")
+                        </p>
+
+
+                        <p class="mb-2">
+                            <strong>Thời gian:</strong>
+                            @tour.StartDate.ToString("dd/MM/yyyy") - @tour.EndDate.ToString("dd/MM/yyyy")
+                        </p>
+
+
+                        <p class="mb-2">
+                            <strong>Thời lượng:</strong>
+                            @(((tour.EndDate - tour.StartDate).Days + 1)) Ngày
+                            @((tour.EndDate - tour.StartDate).Days) Đêm
+                        </p>
+
+
+                        <p class="mb-2">
+                            <strong>Số lượng tối đa:</strong> @tour.MaxParticipants khách
+                        </p>
+
+
+                        <hr class="my-4" />
+
+
+                        <div class="d-flex justify-content-between align-items-end mb-3">
+                            <div>
+                                <p class="mb-1 fw-semibold">Giá mỗi khách:</p>
+                                <p class="mb-1 fw-semibold">Số lượng hành khách:</p>
+                            </div>
+                            <div class="text-end">
+                                <p class="mb-1 fw-bold">@tour.Price.ToString("N0") đ</p>
+                                <p class="mb-1 fw-bold" id="summaryPassengerCount">0 người</p>
+                            </div>
+                        </div>
+
+
+                        <hr />
+
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            @if (tierDiscountPercent > 0)
+{
+    <div class="d-flex justify-content-between text-success mb-2">
+        <span>
+            Giảm giá thành viên (@tierName - @tierDiscountPercent%)
+        </span>
+        <span id="tierDiscountText">- 0 đ</span>
+    </div>
+}
+
+                            <h4 class="fw-bold mb-0">Tổng tiền:</h4>
+                            <h3 class="fw-bold mb-0" style="color:#fba834;" id="summaryTotalPrice">0 đ</h3>
+                            <input type="hidden" id="totalPrice" name="TotalAmount" value="0" />
+                            <input type="hidden" id="finalPrice" name="FinalAmount" value="0" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+<script>
+    let passengerCount = 0;
+    const maxParticipants = @tour.MaxParticipants;
+    const pricePerPerson = parseFloat(
+    document.getElementById('bookingRoot').dataset.price
+    );
+
+    // Update price
+function updateCountsAndPrice() {
+    document.getElementById('hiddenParticipantCount').value = passengerCount;
+    document.getElementById('summaryPassengerCount').textContent =
+        passengerCount + ' người';
+
+    const total = pricePerPerson * passengerCount;
+
+    const tierDiscountPercent = parseFloat(
+        document.getElementById('bookingRoot').dataset.tierDiscount
+    ) || 0;
+
+    const tierDiscount = total * tierDiscountPercent / 100;
+    const final = total - tierDiscount;
+
+    // Hiển thị tổng tiền
+    document.getElementById('summaryTotalPrice').textContent =
+        final.toLocaleString('vi-VN') + ' đ';
+
+    // Hiển thị giảm hạng
+    const tierDiscountText = document.getElementById('tierDiscountText');
+    if (tierDiscountText) {
+        tierDiscountText.textContent =
+            '- ' + tierDiscount.toLocaleString('vi-VN') + ' đ';
+    }
+
+    // Gửi BE
+    document.getElementById('totalPrice').value = total;
+    document.getElementById('finalPrice').value = final;
+    document.getElementById('discountAmount').value = tierDiscount;
+}
+
+
+    // Voucher
+    function applyVoucher() {
+        const code = document.getElementById('voucherCode').value.trim();
+        const total = parseFloat(document.getElementById('finalPrice').value);
+        const messageEl = document.getElementById('voucherMessage');
+
+        if (!code) {
+            messageEl.textContent = 'Vui lòng nhập mã voucher';
+            messageEl.className = 'text-danger mt-2 d-block';
+            return;
+        }
+
+        if (!total || total <= 0) {
+            messageEl.textContent = 'Vui lòng chọn số lượng hành khách trước';
+            messageEl.className = 'text-danger mt-2 d-block';
+            return;
+        }
+
+        fetch('/Vouchers/ApplyVoucher', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                code: code,
+                totalAmount: total
+            })
+        })
+        .then(res => res.json())
+.then(data => {
+    if (!data.success) {
+        messageEl.textContent = data.message;
+        messageEl.className = 'text-danger mt-2 d-block';
+        return;
+    }
+
+    const originalTotal = parseFloat(document.getElementById('totalPrice').value);
+
+    const tierDiscountPercent = parseFloat(
+        document.getElementById('bookingRoot').dataset.tierDiscount
+    ) || 0;
+
+    const tierDiscount = originalTotal * tierDiscountPercent / 100;
+    const afterTierPrice = originalTotal - tierDiscount;
+
+    const voucherDiscount = data.discountAmount;
+    const finalPrice = afterTierPrice - voucherDiscount;
+
+    // UI: giảm hạng
+    const tierDiscountText = document.getElementById('tierDiscountText');
+    if (tierDiscountText) {
+        tierDiscountText.textContent =
+            '- ' + tierDiscount.toLocaleString('vi-VN') + ' đ';
+    }
+
+    // UI: tổng tiền cuối
+    document.getElementById('summaryTotalPrice').textContent =
+        finalPrice.toLocaleString('vi-VN') + ' đ';
+
+    // Hidden gửi BE
+    document.getElementById('voucherId').value = data.voucherId;
+    document.getElementById('discountAmount').value =
+        tierDiscount + voucherDiscount;
+    document.getElementById('finalPrice').value = finalPrice;
+
+    messageEl.textContent = 'Áp dụng voucher thành công!';
+    messageEl.className = 'text-success mt-2 d-block';
+})
+
+        .catch(err => {
+            console.error(err);
+            messageEl.textContent = 'Lỗi hệ thống, vui lòng thử lại';
+            messageEl.className = 'text-danger mt-2 d-block';
+        });
+    }
+
+    // Thêm hành khách
+    document.getElementById('addPassengerBtn').addEventListener('click', function () {
+        if (passengerCount >= maxParticipants) {
+            alert('Tour đã đạt số lượng tối đa!');
+            return;
+        }
+
+        passengerCount++;
+        updateCountsAndPrice();
+
+
+        const container = document.getElementById('passengersList');
+        const block = document.createElement('div');
+        block.className = 'passenger-form mb-4 p-4 border rounded-4 bg-light position-relative';
+
+
+        block.innerHTML = `
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h6 class="fw-bold mb-0 text-primary">Hành khách ${passengerCount}</h6>
+                <button type="button" class="btn btn-outline-danger btn-sm remove-passenger">
+                    <i class="bi bi-trash"></i> Xóa
+                </button>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label small fw-semibold">Họ và tên <span class="text-danger">*</span></label>
+                    <input type="text" name="Passenger_${passengerCount}_FullName" class="form-control rounded-pill" required />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small fw-semibold">Ngày sinh <span class="text-danger">*</span></label>
+                    <input type="date" name="Passenger_${passengerCount}_BirthDate" class="form-control rounded-pill" required />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small fw-semibold">Giới tính</label>
+                    <select name="Passenger_${passengerCount}_Gender" class="form-select rounded-pill">
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small fw-semibold">Số CMND/CCCD (tùy chọn)</label>
+                    <input type="text" name="Passenger_${passengerCount}_IDNumber" class="form-control rounded-pill" placeholder="0123456789" />
+                </div>
+            </div>
+        `;
+
+
+        container.appendChild(block);
+
+
+        // Xử lý xóa
+        block.querySelector('.remove-passenger').addEventListener('click', function () {
+            container.removeChild(block);
+            passengerCount--;
+            updateCountsAndPrice();
+        });
+    });
+
+
+    // Chuyển sang bước 2
+    document.getElementById('continueToPayment').addEventListener('click', function () {
+        if (passengerCount === 0) {
+            alert('Vui lòng thêm ít nhất 1 hành khách!');
+            return;
+        }
+        document.getElementById('step1').style.display = 'none';
+        document.getElementById('step2').style.display = 'block';
+    });
+
+
+    // Quay lại bước 1
+    document.getElementById('backToStep1').addEventListener('click', function () {
+        document.getElementById('step2').style.display = 'none';
+        document.getElementById('step1').style.display = 'block';
+    });
+
+
+            // Cập nhật style checkmark
+            document.querySelectorAll('.payment-option input[type="radio"]').forEach(radio => {
+
+                radio.addEventListener('change', function () {
+
+                    document.querySelectorAll('.payment-option').forEach(opt => {
+
+                        opt.classList.remove('border-warning');
+
+                        opt.querySelector('.checkmark').style.backgroundColor =
+                            'transparent';
+
+                        opt.querySelector('.checkmark i').style.opacity = '0';
+                    });
+
+                    if (this.checked) {
+
+                        this.closest('.payment-option')
+                            .classList.add('border-warning');
+
+                        this.closest('.payment-option')
+                            .querySelector('.checkmark')
+                            .style.backgroundColor = '#fba834';
+
+                        this.closest('.payment-option')
+                            .querySelector('.checkmark')
+                            .style.borderColor = '#fba834';
+
+                        this.closest('.payment-option')
+                            .querySelector('.checkmark i')
+                            .style.opacity = '1';
+                    }
+                });
+            });
+
+    // Khởi tạo ban đầu
+    updateCountsAndPrice();
+</script>
+
+<script>
+    document.querySelector("form").addEventListener("submit", function () {
+        const btn = document.getElementById("submitBookingBtn");
+
+        btn.disabled = true;
+        btn.innerText = "Đang xử lý...";
+    });
+</script>
+}
+
+
+<style>
+    body {
+        background: #f8f9fc;
+    }
+
+
+    .book-btn {
+        background-color: #fba834;
+        color: #222;
+        border: none;
+        box-shadow: 0 8px 25px rgba(251,168,52,0.45);
+        transition: all .3s ease;
+    }
+
+
+    .book-btn:hover {
+        background-color: #e6961e;
+        transform: translateY(-4px);
+        box-shadow: 0 15px 35px rgba(251,168,52,0.55);
+    }
+
+
+    .form-control:focus,
+    .form-select:focus {
+        box-shadow: 0 0 0 .2rem rgba(251,168,52,.25);
+        border-color: #fba834;
+    }
+
+
+    .card {
+        transition: transform .3s ease;
+    }
+
+
+    .card:hover {
+        transform: translateY(-6px);
+    }
+
+
+    /* Style cho phương thức thanh toán */
+    .payment-option {
+        transition: all 0.3s ease;
+        border-color: #e0e0e0 !important;
+    }
+
+
+    .payment-option:hover {
+        border-color: #fba834 !important;
+        box-shadow: 0 4px 15px rgba(251,168,52,0.2);
+    }
+
+
+    .checkmark {
+        width: 26px;
+        height: 26px;
+        background-color: transparent;
+        border: 2px solid #ddd;
+        transition: all 0.3s ease;
+    }
+
+
+    .checkmark i {
+        font-size: 16px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+</style>
+
+
+

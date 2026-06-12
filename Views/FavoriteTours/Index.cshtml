@@ -1,0 +1,170 @@
+@model IEnumerable<ToursAndTravelsManagement.Models.FavoriteTour>
+
+
+@{
+    ViewData["Title"] = "Danh sách yêu thích";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container py-5">
+    <h2 class="section-title text-center mb-5 fw-bold display-5" style="color: #2c3e88;">
+        Tour yêu thích của bạn
+    </h2>
+
+
+    <!-- THANH TÌM KIẾM VÀ LỌC -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto">
+            <div class="input-group input-group-lg shadow-sm rounded-4 overflow-hidden">
+                <span class="input-group-text bg-white border-0">
+                    <i class="ri-search-line text-primary fs-4"></i>
+                </span>
+                <input type="text" id="searchInput" class="form-control border-0 fs-5" placeholder="Tìm kiếm tour yêu thích theo tên..." autocomplete="off">
+            </div>
+        </div>
+    </div>
+
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <i class="ri-heart-3-line text-muted" style="font-size: 5rem;"></i>
+            <p class="text-muted mt-4 fs-4">Bạn chưa yêu thích tour nào.</p>
+            <a asp-controller="Tours" asp-action="PublicTours" class="btn btn-primary btn-lg rounded-pill px-5 mt-3">
+                Khám phá tour ngay <i class="ri-arrow-right-line ms-2"></i>
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4" id="favoriteToursContainer">
+            @foreach (var item in Model)
+            {
+                var tour = item.Tour;
+                var days = (tour.EndDate - tour.StartDate).Days + 1;
+
+
+                <div class="col-12 col-sm-6 col-lg-4 tour-card-item">
+                    <div class="card h-100 shadow-sm border-0 overflow-hidden tour-card"
+                         data-aos="zoom-in" data-aos-duration="800">
+                        <div class="position-relative">
+                            <img src="@(string.IsNullOrEmpty(tour.Destination?.ImageUrl)
+                                        ? "/images/default-tour.jpg"
+                                        : tour.Destination.ImageUrl)"
+                                 alt="@tour.Name"
+                                 class="card-img-top w-100"
+                                 style="height: 230px; object-fit: cover;" />
+
+
+                            <!-- Badge số ngày -->
+                            <div class="position-absolute top-0 end-0 p-3">
+                                <span class="badge bg-primary fs-6">@days ngày</span>
+                            </div>
+                        </div>
+
+
+                        <div class="card-body d-flex flex-column p-4">
+                            <h5 class="card-title fw-bold mb-3 tour-name">@tour.Name</h5>
+
+
+                            <div class="text-muted small mb-3 flex-grow-1">
+                                <div class="mb-2">
+                                    <i class="fas fa-map-marker-alt me-2 text-success"></i>
+                                    @(tour.Destination?.Name ?? "Chưa xác định")
+                                </div>
+                                <div>
+                                    <i class="fas fa-calendar-alt me-2 text-danger"></i>
+                                    @tour.StartDate.ToString("dd/MM/yyyy") - @tour.EndDate.ToString("dd/MM/yyyy")
+                                </div>
+                            </div>
+
+
+                            <div class="mt-auto">
+                                <h4 class="text-danger fw-bold mb-4">
+                                    @string.Format("{0:N0}đ", tour.Price)
+                                </h4>
+
+
+                                <div class="d-grid gap-2">
+                                    <a asp-controller="Tours"
+                                       asp-action="Details"
+                                       asp-route-id="@tour.TourId"
+                                       class="btn btn-primary rounded-pill px-4 py-2 fw-semibold">
+                                        Xem chi tiết <i class="fas fa-arrow-right ms-2"></i>
+                                    </a>
+
+
+                                    <form asp-action="Toggle" method="post" class="d-inline">
+                                        <input type="hidden" name="tourId" value="@tour.TourId" />
+                                        <button type="submit"
+                                                class="btn btn-outline-danger rounded-pill px-4 py-2 w-100">
+                                            <i class="ri-heart-3-line me-1"></i> Bỏ thích
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+
+<style>
+    .tour-card {
+        transition: all 0.3s ease;
+        border-radius: 1rem !important;
+    }
+    .tour-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+    }
+    .tour-card .btn-primary {
+        background-color: #fba834;
+        border: none;
+    }
+    .tour-card .btn-primary:hover {
+        background-color: #e6961e;
+    }
+    .badge {
+        background-color: #333a73 !important;
+    }
+</style>
+
+
+<script>
+    // Tìm kiếm realtime theo tên tour
+    document.getElementById('searchInput')?.addEventListener('input', function () {
+        const query = this.value.toLowerCase().trim();
+        const cards = document.querySelectorAll('.tour-card-item');
+
+
+        cards.forEach(card => {
+            const tourName = card.querySelector('.tour-name').textContent.toLowerCase();
+            if (tourName.includes(query)) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+
+        // Nếu không có kết quả
+        const visibleCards = Array.from(cards).filter(card => card.style.display !== 'none');
+        if (visibleCards.length === 0 && query !== '') {
+            if (!document.getElementById('noResultMsg')) {
+                const msg = document.createElement('div');
+                msg.id = 'noResultMsg';
+                msg.className = 'text-center py-5';
+                msg.innerHTML = '<p class="text-muted fs-4">Không tìm thấy tour nào phù hợp.</p>';
+                document.getElementById('favoriteToursContainer').after(msg);
+            }
+        } else {
+            document.getElementById('noResultMsg')?.remove();
+        }
+    });
+</script>
+

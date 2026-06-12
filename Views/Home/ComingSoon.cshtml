@@ -1,0 +1,31 @@
+@{
+    ViewData["Title"] = "Tính năng đang phát triển";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+
+            <i class="ri-tools-line"
+               style="font-size:64px; color:#F7A531;"></i>
+
+            <h3 class="fw-bold mt-4">
+                Tính năng đang được phát triển
+            </h3>
+
+            <p class="text-muted mt-2">
+                Chức năng này sẽ được hoàn thiện trong các phiên bản tiếp theo.
+                <br />
+                Cảm ơn bạn đã sử dụng hệ thống của chúng tôi.
+            </p>
+
+            <a asp-controller="UserBookings"
+               asp-action="MyBookings"
+               class="btn btn-primary-custom mt-3">
+                Quay lại trang tài khoản
+            </a>
+
+        </div>
+    </div>
+</div>

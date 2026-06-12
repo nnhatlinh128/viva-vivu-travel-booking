@@ -1,0 +1,104 @@
+﻿@model Destination
+
+@{
+    ViewData["Title"] = "Edit Destination";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-4">
+
+                    <h3 class="text-center fw-bold mb-4">
+                        @ViewData["Title"]
+                    </h3>
+
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <input type="hidden" asp-for="DestinationId" />
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label"></label>
+                            <input asp-for="Description" class="form-control" />
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Loại điểm đến</label>
+                            <select asp-for="IsDomestic" class="form-select">
+                                <option value="true">Nội địa</option>
+                                <option value="false">Quốc tế</option>
+                            </select>
+                            <span asp-validation-for="IsDomestic" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Country" class="form-label"></label>
+                            <input asp-for="Country" class="form-control" />
+                            <span asp-validation-for="Country" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="City" class="form-label"></label>
+                            <input asp-for="City" class="form-control" />
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ImageUrl" class="form-label"></label>
+                            <input asp-for="ImageUrl" class="form-control" />
+                            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                        </div>
+
+                        <!-- READONLY INFO -->
+                        <div class="mb-3">
+                            <label asp-for="CreatedBy" class="form-label"></label>
+                            <input asp-for="CreatedBy" class="form-control" readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CreatedDate" class="form-label"></label>
+                            <input asp-for="CreatedDate" class="form-control" readonly />
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" asp-for="IsActive" />
+                            <label class="form-check-label">
+                                @Html.DisplayNameFor(model => model.IsActive)
+                            </label>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary rounded-pill py-2">
+                                Lưu thay đổi
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <a asp-action="Index" class="text-decoration-none">
+                            ← Quay lại danh sách
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

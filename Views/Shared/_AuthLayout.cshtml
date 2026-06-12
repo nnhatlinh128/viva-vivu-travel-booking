@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ToursAndTravelsManagement</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ToursAndTravelsManagement.styles.css" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/tours.css" />
+    <link rel="stylesheet" href="~/css/auth-layout.css" asp-append-version="true"/>
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+
+<body>
+    <header class="auth-header">
+    <div class="container d-flex align-items-center justify-content-between py-3">
+       <!-- Logo -->
+<a asp-controller="Admin" asp-action="Profile" class="d-flex align-items-center text-decoration-none">
+    <img src="~/images/logovivavivu.png" alt="VivaVivu" class="auth-logo">
+</a>
+
+<!-- User login -->
+<div class="auth-user">
+    <span class="auth-name">@(User?.Identity?.Name ?? "Nguyễn Văn A")</span>
+    <img src="~/images/avatar3.jpg" alt="Avatar" class="auth-avatar">
+</div>
+    </div>
+</header>
+
+
+    <div class="@(ViewData["IsFullWidth"] != null && (bool)ViewData["IsFullWidth"] ? "w-100" : "container")">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- FOOTER-->
+    <footer class="text-white py-5" style="background: #333a73 !important;">
+        <div class="container py-4">
+            <div class="row g-5 align-items-start">
+
+                <!-- Logo + Mô tả -->
+                <div class="col-lg-4 col-md-6 text-center text-lg-start">
+                    <img src="https://i.pinimg.com/736x/6e/cf/58/6ecf589e3b9b2c86bfedb915ab85b47a.jpg"
+                        alt="Viva Vivu Logo" class="mb-4 rounded-circle border border-4 border-warning"
+                        style="height: 100px;">
+
+                    <p class="mb-0 small opacity-90" style="line-height: 1.7;">
+                        Nền tảng đặt tour du lịch trực tuyến hàng đầu Việt Nam.<br>
+                        Trải nghiệm hành trình tuyệt vời cùng Viva Vivu.
+                    </p>
+
+                    <div class="d-flex gap-4 justify-content-center justify-content-lg-start mt-4">
+                        <a href="https://facebook.com/vivavivu" target="_blank"
+                            class="text-white fs-3 opacity-80 hover-opacity-100">
+                            <img src="https://play-lh.googleusercontent.com/KCMTYuiTrKom4Vyf0G4foetVOwhKWzNbHWumV73IXexAIy5TTgZipL52WTt8ICL-oIo"
+                                alt="Facebook" style="width: 40px; height: 40px; border-radius: 50%;">
+                        </a>
+                        <a href="https://zalo.me/0866849040" target="_blank"
+                            class="text-white fs-3 opacity-80 hover-opacity-100">
+                            <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/a1/a6/5f/a1a65fcc-2623-16f9-b2e5-1f248a2f9ed9/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/230x0w.webp"
+                                alt="Zalo" style="width: 40px; height: 40px; border-radius: 50%;">
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Liên hệ -->
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="fw-bold mb-4 text-warning">Liên hệ</h5>
+                    <ul class="list-unstyled small">
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="ri-map-pin-line text-warning me-3"></i>
+                            279 Nguyễn Tri Phương, Phường Diên Hồng, TP.HCM</span>
+                        </li>
+                        <li class="mb-3">
+                            <i class="ri-mail-line text-warning me-3"></i>
+                            support@vivavivu.com
+                        </li>
+                        <li class="mb-3">
+                            <i class="ri-phone-line text-warning me-3"></i>
+                            086 684 9040
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Hỗ trợ khách hàng -->
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="fw-bold mb-4 text-warning">Hỗ trợ khách hàng</h5>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2 text-success"><i class="ri-checkbox-circle-line me-2"></i>Câu hỏi thường gặp
+                        </li>
+                        <li class="mb-2 text-success"><i class="ri-checkbox-circle-line me-2"></i>Chính sách bảo mật
+                        </li>
+                        <li class="mb-2 text-success"><i class="ri-checkbox-circle-line me-2"></i>Điều khoản sử dụng
+                        </li>
+                        <li class="mb-2 text-success"><i class="ri-checkbox-circle-line me-2"></i>Hướng dẫn thanh toán
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Giờ làm việc -->
+                <div class="col-lg-2 col-md-6">
+                    <h5 class="fw-bold mb-4 text-warning">Giờ làm việc</h5>
+
+                    <div class="text-light" style="font-size: 0.95rem;">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>T2 – T6</span>
+                            <span class="fw-bold">08:00-18:00</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>T7</span>
+                            <span class="fw-bold">08:00-12:00</span>
+                        </div>
+                        <div class="d-flex justify-content-between text-warning fw-bold">
+                            <span>Chủ nhật</span>
+                            <span>Nghỉ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Copyright -->
+                <hr class="my-5 border-secondary opacity-20">
+                <div class="text-center small opacity-70">
+                    © 2025 VivaVivu Travel. All rights reserved.
+                </div>
+            </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script src="~/js/main.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>
