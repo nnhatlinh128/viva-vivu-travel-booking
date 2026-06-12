@@ -145,6 +145,12 @@ public class PayPalService
             $"{_configuration["PayPal:BaseUrl"]}/v2/checkout/orders/{orderId}/capture",
             content);
 
-        response.EnsureSuccessStatusCode();
+        var responseBody =
+            await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(responseBody);
+        }
     }
 }
