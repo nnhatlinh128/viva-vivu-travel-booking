@@ -136,9 +136,14 @@ public class PayPalService
                 "Bearer",
                 accessToken);
 
+        var content = new StringContent(
+            "{}",
+            Encoding.UTF8,
+            "application/json");
+
         var response = await client.PostAsync(
             $"{_configuration["PayPal:BaseUrl"]}/v2/checkout/orders/{orderId}/capture",
-            null);
+            content);
 
         response.EnsureSuccessStatusCode();
     }
