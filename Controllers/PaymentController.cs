@@ -151,41 +151,33 @@ public class PaymentController : Controller
         string token,
         string PayerID)
     {
-        await _payPalService.CaptureOrderAsync(token);
-
-        var booking = _context.Bookings
-            .OrderByDescending(x => x.BookingId)
-            .FirstOrDefault();
-
-        if (booking == null)
+        try
         {
-            return NotFound();
-        }
+            await _payPalService.CaptureOrderAsync(token);
 
-        booking.PaymentStatus =
-            PaymentStatus.Completed;
+            var booking = _context.Bookings
+                .OrderByDescending(x => x.BookingId)
+                .FirstOrDefault();
 
-        booking.Status =
-            BookingStatus.Confirmed;
-
-        booking.PaymentGateway =
-            "PayPal";
-
-        booking.PaymentTransactionId =
-            token;
-
-        booking.PaymentCompletedAt =
-            DateTime.UtcNow;
-
-        _context.SaveChanges();
-
-        return RedirectToAction(
-            "Success",
-            "UserBookings",
-            new
+            if (booking == null)
             {
-                bookingId = booking.BookingId
-            });
+                return Content("Booking not found");
+            }
+
+            booking.PaymentStatus = PaymentStatus.Completed;
+            booking.Status = BookingStatus.Confirmed;
+            booking.PaymentGateway = "PayPal";
+            booking.PaymentTransactionId = token;
+            booking.PaymentCompletedAt = DateTime.UtcNow;
+
+            _context.SaveChanges();
+
+            return Content("PAYPAL SUCCESS");
+        }
+        catch (Exception ex)
+        {
+            return Content(ex.ToString());
+        }
     }
 
     [HttpGet]
